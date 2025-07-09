@@ -54,7 +54,7 @@ extension ToastAttributes {
         titleMessageSpacing: CGFloat = 0,
         title: String? = nil,
         message: String,
-        showViewButton: Bool = false,
+        showButton: Bool = false,
         titleFont: UIFont = UIFont.systemFont(ofSize: 0, weight: .bold),
         messageFont: UIFont = UIFont.systemFont(ofSize: 0),
         buttonText: String = "Button",
@@ -81,7 +81,7 @@ extension ToastAttributes {
             titleMessageSpacing: titleMessageSpacing,
             buttonText: buttonText,
             buttonTextFont: buttonTextFont,
-            showViewButton: showViewButton,
+            showButton: showButton,
             position: position,
             positionOffset: positionOffset
         )
@@ -95,7 +95,7 @@ Here’s how you can use your custom initializer to show a toast:
 let attributes = ToastAttributes.customInit(
     title: "Title here",
     message: "message here",
-    showViewButton: true
+    showButton: true
 )
 
 view.showToastMessage(with: attributes, onButtonTap: {
