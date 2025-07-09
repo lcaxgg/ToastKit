@@ -42,25 +42,25 @@ import ToastKit
 
 extension ToastAttributes {
     static func customInit(
-        contentTopPadding: CGFloat = 16,
-        contentBottomPadding: CGFloat = 16,
-        contentLeadingPadding: CGFloat = 20,
-        contentTrailingPadding: CGFloat = 20,
-        containerLeadingPadding: CGFloat = 13,
-        containerTrailingPadding: CGFloat = 13,
-        cornerRadius: CGFloat = 12,
+        contentTopPadding: CGFloat = 0,
+        contentBottomPadding: CGFloat = 0,
+        contentLeadingPadding: CGFloat = 0,
+        contentTrailingPadding: CGFloat = 0,
+        containerLeadingPadding: CGFloat = 0,
+        containerTrailingPadding: CGFloat = 0,
+        cornerRadius: CGFloat = 0,
         backgroundColor: UIColor = .black,
         foregroundColor: UIColor = .white,
         titleMessageSpacing: CGFloat = 0,
         title: String? = nil,
-        message: String? = nil,
+        message: String,
         showViewButton: Bool = false,
-        titleFont: UIFont = UIFont.systemFont(ofSize: 18, weight: .bold),
-        messageFont: UIFont = UIFont.systemFont(ofSize: 14),
+        titleFont: UIFont = UIFont.systemFont(ofSize: 0, weight: .bold),
+        messageFont: UIFont = UIFont.systemFont(ofSize: 0),
         buttonText: String = "Button",
-        buttonTextFont: UIFont = UIFont.systemFont(ofSize: 14),
+        buttonTextFont: UIFont = UIFont.systemFont(ofSize: 0),
         position: ToastPosition = .bottom,
-        positionOffset: CGFloat = 40
+        positionOffset: CGFloat = 0
     ) -> ToastAttributes {
         return ToastAttributes(
             contentTopPadding: contentTopPadding,
@@ -101,7 +101,7 @@ Here’s how you can use your custom initializer to show a toast:
    
     view.addSubview(toast)
     toast.setConstraints(in: view)
-    toast.animateWith(duration: 0.2, deadline: 5)
+    toast.animateWith(duration: 0.2, deadline: 1.5)
     toast.onButtonTap = {
         print("Button tapped!")
     }
@@ -114,4 +114,6 @@ Here’s how you can use your custom initializer to show a toast:
 
 | Simple Toast                                 | Toast with Button                             |
 |:---------------------------------------------:|:---------------------------------------------:|
-| ![image2](image2) | ![image1](image1) |
+| <img width="346" alt="Screenshot 2025-07-09 at 5 05 03 PM" src="https://github.com/user-attachments/assets/9857012c-97f7-4535-ad78-730fce3d41ad" /> | <img width="341" alt="Screenshot 2025-07-09 at 5 05 26 PM" src="https://github.com/user-attachments/assets/a5325d56-e855-4567-982a-45f00dfbb726" /> |
+
+
