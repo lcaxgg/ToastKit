@@ -27,7 +27,7 @@ public struct ToastAttributes {
     
     let buttonText: String
     let buttonTextFont: UIFont
-    let showViewButton: Bool
+    let showButton: Bool
     
     let position: ToastPosition
     let positionOffset: CGFloat
@@ -52,7 +52,7 @@ public struct ToastAttributes {
         titleMessageSpacing: CGFloat,
         buttonText: String,
         buttonTextFont: UIFont,
-        showViewButton: Bool,
+        showButton: Bool,
         position: ToastPosition,
         positionOffset: CGFloat,
         duration: TimeInterval,
@@ -74,7 +74,7 @@ public struct ToastAttributes {
         self.titleMessageSpacing = titleMessageSpacing
         self.buttonText = buttonText
         self.buttonTextFont = buttonTextFont
-        self.showViewButton = showViewButton
+        self.showButton = showButton
         self.position = position
         self.positionOffset = positionOffset
         self.duration = duration
