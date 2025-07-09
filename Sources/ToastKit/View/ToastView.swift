@@ -8,6 +8,7 @@
 import UIKit
 
 class ToastView: UIView {
+    
     //MARK: - Properties
     
     private var attributes: ToastAttributes!
