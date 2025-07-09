@@ -11,7 +11,7 @@ public class ToastView: UIView {
     //MARK: - Properties
     
     private var attributes: ToastAttributes!
-    var onButtonTap: (() -> Void)?
+    public var onButtonTap: (() -> Void)?
     
     //MARK: - Initializations
     
@@ -106,7 +106,7 @@ private extension ToastView {
 
 //MARK: - Public method/s
 
-extension ToastView {
+public extension ToastView {
     func setConstraints(in view: UIView) {
         let bottomConstraint = bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -attributes.positionOffset)
         
