@@ -32,6 +32,9 @@ public struct ToastAttributes {
     let position: ToastPosition
     let positionOffset: CGFloat
     
+    let duration: TimeInterval
+    let deadline: CGFloat
+    
     public init(
         contentTopPadding: CGFloat,
         contentBottomPadding: CGFloat,
@@ -51,7 +54,9 @@ public struct ToastAttributes {
         buttonTextFont: UIFont,
         showViewButton: Bool,
         position: ToastPosition,
-        positionOffset: CGFloat
+        positionOffset: CGFloat,
+        duration: TimeInterval,
+        deadline: CGFloat
     ) {
         self.contentTopPadding = contentTopPadding
         self.contentBottomPadding = contentBottomPadding
@@ -72,5 +77,7 @@ public struct ToastAttributes {
         self.showViewButton = showViewButton
         self.position = position
         self.positionOffset = positionOffset
+        self.duration = duration
+        self.deadline = deadline
     }
 }

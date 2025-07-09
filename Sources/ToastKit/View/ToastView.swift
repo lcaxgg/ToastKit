@@ -7,15 +7,15 @@
 
 import UIKit
 
-public class ToastView: UIView {
+class ToastView: UIView {
     //MARK: - Properties
     
     private var attributes: ToastAttributes!
-    public var onButtonTap: (() -> Void)?
+    var onButtonTap: (() -> Void)?
     
     //MARK: - Initializations
     
-    public init(with attributesParam: ToastAttributes) {
+    init(with attributesParam: ToastAttributes) {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = attributesParam.backgroundColor
@@ -122,7 +122,7 @@ private extension ToastView {
 
 //MARK: - Public method/s
 
-public extension ToastView {
+extension ToastView {
     func setConstraints(in view: UIView) {
         let bottomConstraint = bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -attributes.positionOffset)
         
@@ -162,19 +162,5 @@ private extension ToastView {}
 extension ToastView {
     @objc private func buttonTapped() {
         onButtonTap?()
-    }
-}
-
-
-public extension UIView {
-    func showToastMessage(with attributes: ToastAttributes, onButtonTap: (() -> Void)? = nil) {
-        let toast = ToastView(with: attributes)
-        addSubview(toast)
-        
-        toast.setConstraints(in: self)
-        toast.animateWith(duration: 0.2, deadline: 5)
-        toast.onButtonTap = {
-            onButtonTap?()
-        }
     }
 }
