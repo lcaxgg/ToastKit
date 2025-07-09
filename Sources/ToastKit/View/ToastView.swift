@@ -111,6 +111,7 @@ private extension ToastView {
                 .underlineStyle: NSUnderlineStyle.single.rawValue
             ]
         )
+        
         button.setAttributedTitle(attributedTitle, for: .normal)
         button.tintColor = attributes.foregroundColor
         button.addTarget(nil, action: #selector(buttonTapped), for: .touchUpInside)
