@@ -20,7 +20,7 @@ public struct ToastAttributes {
     let foregroundColor: UIColor
    
     let title: String?
-    let message: String?
+    let message: String
     let titleFont: UIFont
     let messageFont: UIFont
     let titleMessageSpacing: CGFloat
@@ -43,7 +43,7 @@ public struct ToastAttributes {
         backgroundColor: UIColor,
         foregroundColor: UIColor,
         title: String?,
-        message: String?,
+        message: String,
         titleFont: UIFont,
         messageFont: UIFont,
         titleMessageSpacing: CGFloat,
