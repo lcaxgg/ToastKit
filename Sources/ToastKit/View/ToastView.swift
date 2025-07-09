@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ToastView: UIView {
+public class ToastView: UIView {
     //MARK: - Properties
     
     private var attributes: ToastAttributes!
