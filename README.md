@@ -60,7 +60,9 @@ extension ToastAttributes {
         buttonText: String = "Button",
         buttonTextFont: UIFont = UIFont.systemFont(ofSize: 0),
         position: ToastPosition = .bottom,
-        positionOffset: CGFloat = 0
+        positionOffset: CGFloat = 0,
+        duration: TimeInterval = 0,
+        deadline: CGFloat = 0
     ) -> ToastAttributes {
         return ToastAttributes(
             contentTopPadding: contentTopPadding,
@@ -90,30 +92,41 @@ extension ToastAttributes {
 Here’s how you can use your custom initializer to show a toast:
 
 ```swift
-@objc private func showToast() {
-    let attributes = ToastAttributes.customInit(
-        title: "Title here",
-        message: "message here",
-        showViewButton: true
-    )
-    
-    let toast = ToastView(with: attributes)
-   
-    view.addSubview(toast)
-    toast.setConstraints(in: view)
-    toast.animateWith(duration: 0.2, deadline: 1.5)
-    toast.onButtonTap = {
-        print("Button tapped!")
-    }
-}
+let attributes = ToastAttributes.customInit(
+    title: "Title here",
+    message: "message here",
+    showViewButton: true
+)
+
+view.showToastMessage(with: attributes, onButtonTap: {
+    print("Button tapped!")
+})
 ```
 
 ---
 
 ## 🖼️ Sample Screenshots
 
-| Simple Toast                                 | Toast with Button                             |
-|:---------------------------------------------:|:---------------------------------------------:|
-| <img width="346" alt="Screenshot 2025-07-09 at 5 05 03 PM" src="https://github.com/user-attachments/assets/9857012c-97f7-4535-ad78-730fce3d41ad" /> | <img width="341" alt="Screenshot 2025-07-09 at 5 05 26 PM" src="https://github.com/user-attachments/assets/a5325d56-e855-4567-982a-45f00dfbb726" /> |
+<table>
+  <tr>
+    <th style="text-align:center">Simple Toast</th>
+    <th style="text-align:center">Toast with Button</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img width="346" alt="Screenshot 2025-07-09 at 5 05 03 PM" src="https://github.com/user-attachments/assets/9857012c-97f7-4535-ad78-730fce3d41ad" />
+    </td>
+    <td align="center">
+      <img width="341" alt="Screenshot 2025-07-09 at 5 05 26 PM" src="https://github.com/user-attachments/assets/a5325d56-e855-4567-982a-45f00dfbb726" />
+    </td>
+  </tr>
+</table>
 
+---
 
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!  
+Feel free to check [issues page](https://github.com/lcaxgg/ToastKit/issues).
+
+---
