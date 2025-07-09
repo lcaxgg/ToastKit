@@ -7,15 +7,20 @@
 
 import UIKit
 
-public extension UIView {
-    func showToastMessage(with attributes: ToastAttributes, onButtonTap: (() -> Void)? = nil) {
+extension UIView {
+    func showToastMessage(
+        with attributes: ToastAttributes,
+        onButtonTap buttonAction: (() -> Void)? = nil
+    ) {
         let toast = ToastView(with: attributes)
         addSubview(toast)
         
         toast.setConstraints(in: self)
         toast.animateWith(duration: attributes.duration, deadline: attributes.deadline)
+        
         toast.onButtonTap = {
-            onButtonTap?()
+            buttonAction?()
         }
     }
 }
+
