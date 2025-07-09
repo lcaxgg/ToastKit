@@ -15,7 +15,7 @@ public class ToastView: UIView {
     
     //MARK: - Initializations
     
-    init(with attributesParam: ToastAttributes) {
+    public init(with attributesParam: ToastAttributes) {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = attributesParam.backgroundColor
