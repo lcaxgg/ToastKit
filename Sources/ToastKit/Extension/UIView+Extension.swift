@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension UIView {
+public extension UIView {
     func showToastMessage(
         with attributes: ToastAttributes,
         onButtonTap buttonAction: (() -> Void)? = nil
