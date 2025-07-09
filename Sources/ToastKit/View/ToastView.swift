@@ -164,3 +164,17 @@ extension ToastView {
         onButtonTap?()
     }
 }
+
+
+public extension UIView {
+    func showToastMessage(with attributes: ToastAttributes, onButtonTap: (() -> Void)? = nil) {
+        let toast = ToastView(with: attributes)
+        addSubview(toast)
+        
+        toast.setConstraints(in: self)
+        toast.animateWith(duration: 0.2, deadline: 5)
+        toast.onButtonTap = {
+            onButtonTap?()
+        }
+    }
+}
