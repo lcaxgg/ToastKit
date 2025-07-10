@@ -83,7 +83,9 @@ extension ToastAttributes {
             buttonTextFont: buttonTextFont,
             showButton: showButton,
             position: position,
-            positionOffset: positionOffset
+            positionOffset: positionOffset,
+            duration: duration,
+            deadline: deadline
         )
     }
 }
