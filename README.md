@@ -42,12 +42,8 @@ import ToastKit
 
 extension ToastAttributes {
     static func customInit(
-        contentTopPadding: CGFloat = 0,
-        contentBottomPadding: CGFloat = 0,
-        contentLeadingPadding: CGFloat = 0,
-        contentTrailingPadding: CGFloat = 0,
-        containerLeadingPadding: CGFloat = 0,
-        containerTrailingPadding: CGFloat = 0,
+        contentInsets: UIEdgeInsets = .zero,
+        containerInsets: UIEdgeInsets = .zero,
         cornerRadius: CGFloat = 0,
         backgroundColor: UIColor = .black,
         foregroundColor: UIColor = .white,
@@ -65,12 +61,8 @@ extension ToastAttributes {
         deadline: CGFloat = 0
     ) -> ToastAttributes {
         return ToastAttributes(
-            contentTopPadding: contentTopPadding,
-            contentBottomPadding: contentBottomPadding,
-            contentLeadingPadding: contentLeadingPadding,
-            contentTrailingPadding: contentTrailingPadding,
-            containerLeadingPadding: containerLeadingPadding,
-            containerTrailingPadding: containerTrailingPadding,
+            contentInsets: contentInsets,
+            containerInsets: containerInsets,
             cornerRadius: cornerRadius,
             backgroundColor: backgroundColor,
             foregroundColor: foregroundColor,
