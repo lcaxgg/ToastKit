@@ -8,12 +8,8 @@
 import UIKit
 
 public struct ToastAttributes {
-    let contentTopPadding: CGFloat
-    let contentBottomPadding: CGFloat
-    let contentLeadingPadding: CGFloat
-    let contentTrailingPadding: CGFloat
-    let containerLeadingPadding: CGFloat
-    let containerTrailingPadding: CGFloat
+    let contentInsets: UIEdgeInsets
+    let containerInsets: UIEdgeInsets
     let cornerRadius: CGFloat
     
     let backgroundColor: UIColor
@@ -36,34 +32,26 @@ public struct ToastAttributes {
     let deadline: CGFloat
     
     public init(
-        contentTopPadding: CGFloat,
-        contentBottomPadding: CGFloat,
-        contentLeadingPadding: CGFloat,
-        contentTrailingPadding: CGFloat,
-        containerLeadingPadding: CGFloat,
-        containerTrailingPadding: CGFloat,
-        cornerRadius: CGFloat,
-        backgroundColor: UIColor,
-        foregroundColor: UIColor,
-        title: String?,
-        message: String,
-        titleFont: UIFont,
-        messageFont: UIFont,
-        titleMessageSpacing: CGFloat,
-        buttonText: String,
-        buttonTextFont: UIFont,
-        showButton: Bool,
-        position: ToastPosition,
-        positionOffset: CGFloat,
-        duration: TimeInterval,
-        deadline: CGFloat
+        contentInsets: UIEdgeInsets = UIEdgeInsets(top: 10.0, left: 15.0, bottom: 10.0, right: 15.0),
+        containerInsets: UIEdgeInsets = UIEdgeInsets(top: .zero, left: 13.0, bottom: .zero, right: 13.0),
+        cornerRadius: CGFloat = 8.0,
+        backgroundColor: UIColor = UIColor.colorWithHexString("#3C3C3C"),
+        foregroundColor: UIColor = UIColor.white,
+        title: String? = "Title",
+        message: String = "message",
+        titleFont: UIFont = .systemFont(ofSize: 17.0),
+        messageFont: UIFont = .systemFont(ofSize: 15.0),
+        titleMessageSpacing: CGFloat = .zero,
+        buttonText: String = "Button",
+        buttonTextFont: UIFont = .systemFont(ofSize: 15.0),
+        showButton: Bool = true,
+        position: ToastPosition = .bottom,
+        positionOffset: CGFloat = .zero,
+        duration: TimeInterval = 0.2,
+        deadline: CGFloat = 1.5
     ) {
-        self.contentTopPadding = contentTopPadding
-        self.contentBottomPadding = contentBottomPadding
-        self.contentLeadingPadding = contentLeadingPadding
-        self.contentTrailingPadding = contentTrailingPadding
-        self.containerLeadingPadding = containerLeadingPadding
-        self.containerTrailingPadding = containerTrailingPadding
+        self.contentInsets = contentInsets
+        self.containerInsets = containerInsets
         self.cornerRadius = cornerRadius
         self.backgroundColor = backgroundColor
         self.foregroundColor = foregroundColor

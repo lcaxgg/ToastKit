@@ -50,10 +50,10 @@ class ToastView: UIView {
         subView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            subView.topAnchor.constraint(equalTo: topAnchor, constant: attributesParam.contentTopPadding),
-            subView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -attributesParam.contentBottomPadding),
-            subView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: attributesParam.contentLeadingPadding),
-            subView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -attributesParam.contentTrailingPadding)
+            subView.topAnchor.constraint(equalTo: topAnchor, constant: attributesParam.contentInsets.top),
+            subView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -attributesParam.contentInsets.bottom),
+            subView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: attributesParam.contentInsets.left),
+            subView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -attributesParam.contentInsets.right)
         ])
     }
     
@@ -129,8 +129,8 @@ extension ToastView {
         let bottomConstraint = bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -attributes.positionOffset)
         
         NSLayoutConstraint.activate([
-            leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: attributes.containerLeadingPadding),
-            trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -attributes.containerTrailingPadding),
+            leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: attributes.containerInsets.left),
+            trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -attributes.containerInsets.right),
             bottomConstraint
         ])
     }
