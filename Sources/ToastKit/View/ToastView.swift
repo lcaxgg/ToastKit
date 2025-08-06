@@ -138,21 +138,25 @@ extension ToastView {
     func animateWith(duration: TimeInterval, deadline: CGFloat) {
         alpha = 0
         
-        UIView.animate(withDuration: duration) { [weak self] in
+        UIView.animate(withDuration: duration, animations: { [weak self] in
             guard let self = self else { return }
             self.alpha = 1
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + deadline) { [weak self] in
+        }) { [weak self] _ in
             guard let self = self else { return }
             
-            UIView.animate(withDuration: duration, animations: {
-                self.alpha = 0
-            }) { _ in
-                self.removeFromSuperview()
+            // Wait for `deadline` seconds, then fade out
+            DispatchQueue.main.asyncAfter(deadline: .now() + deadline) { [weak self] in
+                guard let self = self else { return }
+                
+                // Fade Out
+                UIView.animate(withDuration: duration, animations: {
+                    self.alpha = 0
+                }) { _ in
+                    self.removeFromSuperview()
+                }
             }
         }
-    }
+      }
 }
 
 //MARK: - Private method/s
