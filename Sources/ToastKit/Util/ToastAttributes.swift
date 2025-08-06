@@ -44,7 +44,7 @@ public struct ToastAttributes {
         titleMessageSpacing: CGFloat = .zero,
         buttonText: String = "Button",
         buttonTextFont: UIFont = .systemFont(ofSize: 15.0),
-        showButton: Bool = true,
+        showButton: Bool = false,
         position: ToastPosition = .bottom,
         positionOffset: CGFloat = .zero,
         duration: TimeInterval = 0.2,
