@@ -47,7 +47,7 @@ public struct ToastAttributes {
         showButton: Bool = false,
         position: ToastPosition = .bottom,
         positionOffset: CGFloat = .zero,
-        duration: TimeInterval = 0.2,
+        duration: TimeInterval = 0.5,
         deadline: CGFloat = 1.5
     ) {
         self.contentInsets = contentInsets
