@@ -48,7 +48,7 @@ public struct ToastAttributes {
         position: ToastPosition = .bottom,
         positionOffset: CGFloat = .zero,
         duration: TimeInterval = 0.5,
-        deadline: CGFloat = 1.5
+        deadline: CGFloat = 2.0
     ) {
         self.contentInsets = contentInsets
         self.containerInsets = containerInsets
