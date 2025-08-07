@@ -126,8 +126,13 @@ private extension ToastView {
 
 extension ToastView {
     func setConstraints(in view: UIView) {
-        let bottomConstraint = bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -attributes.positionOffset)
-        
+        // Determine bottom offset based on safe area insets
+        let bottomInset = view.safeAreaInsets.bottom
+        let bottomOffset = (bottomInset > 0 ? -attributes.positionOffset : -(attributes.positionOffset + 16))
+
+        // Apply bottom constraint relative to view.bottomAnchor
+        let bottomConstraint = bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: bottomOffset)
+
         NSLayoutConstraint.activate([
             leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: attributes.containerInsets.left),
             trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -attributes.containerInsets.right),
