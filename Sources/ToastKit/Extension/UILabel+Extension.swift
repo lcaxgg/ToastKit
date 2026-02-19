@@ -17,7 +17,7 @@ public extension UILabel {
             .font: attributes.titleFont as Any,
             .foregroundColor: attributes.foregroundColor as Any,
             .kern: attributes.kern
-        ], range: NSRange(location: 0, length: attributedString.length))
+        ], range: NSRange(location: .zero, length: attributedString.length))
         
         let style = NSMutableParagraphStyle()
         style.alignment = attributes.alignment
@@ -26,7 +26,7 @@ public extension UILabel {
         attributedString.addAttribute(
             .paragraphStyle,
             value: style,
-            range: NSRange(location: 0, length: attributedString.length)
+            range: NSRange(location: .zero, length: attributedString.length)
         )
         
         attributedText = attributedString as NSAttributedString
@@ -39,7 +39,7 @@ public extension UILabel {
             .font: attributes.messageFont as Any,
             .foregroundColor: attributes.foregroundColor as Any,
             .kern: attributes.kern
-        ], range: NSRange(location: 0, length: attributedString.length))
+        ], range: NSRange(location: .zero, length: attributedString.length))
         
         let style = NSMutableParagraphStyle()
         style.alignment = attributes.alignment
@@ -48,7 +48,7 @@ public extension UILabel {
         attributedString.addAttribute(
             .paragraphStyle,
             value: style,
-            range: NSRange(location: 0, length: attributedString.length)
+            range: NSRange(location: .zero, length: attributedString.length)
         )
         
         attributedText = attributedString as NSAttributedString
