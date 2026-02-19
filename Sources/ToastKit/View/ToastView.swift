@@ -81,21 +81,11 @@ private extension ToastView {
     
     func setupButton(_ attributes: ToastAttributes) -> UIButton {
         let button = UIButton(type: .system)
-        let attributedTitle = NSAttributedString(
-            string: attributes.buttonText,
-            attributes: [
-                .font: attributes.buttonTextFont,
-                .foregroundColor: attributes.foregroundColor,
-                .underlineStyle: NSUnderlineStyle.single.rawValue
-            ]
-        )
-        
-        button.setAttributedTitle(attributedTitle, for: .normal)
         button.tintColor = attributes.foregroundColor
         button.addTarget(nil, action: #selector(buttonTapped), for: .touchUpInside)
         button.setContentHuggingPriority(.required, for: .horizontal)
         button.setContentCompressionResistancePriority(.required, for: .horizontal)
-        
+        button.configureButtonText(attributes)
         return button
     }
 }
