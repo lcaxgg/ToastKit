@@ -21,6 +21,10 @@ public struct ToastAttributes {
     let messageFont: UIFont
     let titleMessageSpacing: CGFloat
     
+    let kern: CGFloat
+    let lineSpacing: CGFloat
+    let alignment: NSTextAlignment
+    
     let buttonText: String
     let buttonTextFont: UIFont
     let showButton: Bool
@@ -45,6 +49,9 @@ public struct ToastAttributes {
         buttonText: String = "Button",
         buttonTextFont: UIFont = .systemFont(ofSize: 15.0),
         showButton: Bool = false,
+        kern: CGFloat = .zero,
+        lineSpacing: CGFloat? = nil,
+        alignment: NSTextAlignment = .left,
         position: ToastPosition = .bottom,
         positionOffset: CGFloat = .zero,
         duration: TimeInterval = 0.5,
@@ -63,6 +70,9 @@ public struct ToastAttributes {
         self.buttonText = buttonText
         self.buttonTextFont = buttonTextFont
         self.showButton = showButton
+        self.kern = kern
+        self.lineSpacing = lineSpacing ?? .zero
+        self.alignment = alignment
         self.position = position
         self.positionOffset = positionOffset
         self.duration = duration

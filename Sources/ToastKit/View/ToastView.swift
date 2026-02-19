@@ -67,37 +67,15 @@ class ToastView: UIView {
 private extension ToastView {
     func setupTitleLabel(_ attributes: ToastAttributes) -> UILabel {
         let titleLabel = UILabel()
-        
-        if let title = attributes.title {
-            let attributedText = NSAttributedString(
-                string: title,
-                attributes: [
-                    .font: attributes.titleFont,
-                    .foregroundColor: attributes.foregroundColor
-                ]
-            )
-            
-            titleLabel.attributedText = attributedText
-        }
-        
-        titleLabel.numberOfLines = 0
+        titleLabel.numberOfLines = .zero
+        titleLabel.configureTitle(attributes)
         return titleLabel
     }
     
     func setupMessageLabel(_ attributes: ToastAttributes) -> UILabel {
         let messageLabel = UILabel()
-        
-        let attributedText = NSAttributedString(
-            string: attributes.message,
-            attributes: [
-                .font: attributes.messageFont,
-                .foregroundColor: attributes.foregroundColor
-            ]
-        )
-        
-        messageLabel.attributedText = attributedText
-        messageLabel.numberOfLines = 0
-        
+        messageLabel.numberOfLines = .zero
+        messageLabel.configureMessage(attributes)
         return messageLabel
     }
     
