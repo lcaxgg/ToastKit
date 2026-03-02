@@ -20,7 +20,8 @@ public extension UIButton {
         
         let style = NSMutableParagraphStyle()
         style.alignment = attributes.alignment
-        style.lineSpacing = attributes.lineSpacing
+        style.minimumLineHeight = attributes.buttonTextMinimumLineHeight
+        style.maximumLineHeight = attributes.buttonTextMaximumLineHeight
         
         attributedString.addAttribute(
             .paragraphStyle,

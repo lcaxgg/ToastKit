@@ -14,7 +14,7 @@ public struct ToastAttributes {
     
     let backgroundColor: UIColor
     let foregroundColor: UIColor
-   
+    
     let title: String?
     let message: String
     let titleFont: UIFont
@@ -27,6 +27,8 @@ public struct ToastAttributes {
     let alignment: NSTextAlignment
     
     let buttonText: String
+    let buttonTextMinimumLineHeight: CGFloat
+    let buttonTextMaximumLineHeight: CGFloat
     let buttonTextFont: UIFont
     let showButton: Bool
     
@@ -48,6 +50,8 @@ public struct ToastAttributes {
         messageFont: UIFont = .systemFont(ofSize: 15.0),
         titleMessageSpacing: CGFloat = .zero,
         buttonText: String = "Button",
+        buttonTextMinimumLineHeight: CGFloat? = nil,
+        buttonTextMaximumLineHeight: CGFloat? = nil,
         buttonTextFont: UIFont = .systemFont(ofSize: 15.0),
         showButton: Bool = false,
         kern: CGFloat = .zero,
@@ -71,6 +75,8 @@ public struct ToastAttributes {
         self.messageFont = messageFont
         self.titleMessageSpacing = titleMessageSpacing
         self.buttonText = buttonText
+        self.buttonTextMinimumLineHeight = buttonTextMinimumLineHeight ?? .zero
+        self.buttonTextMaximumLineHeight = buttonTextMaximumLineHeight ?? .zero
         self.buttonTextFont = buttonTextFont
         self.showButton = showButton
         self.kern = kern
