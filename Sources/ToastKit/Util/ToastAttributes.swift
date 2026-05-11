@@ -37,6 +37,7 @@ public struct ToastAttributes {
     
     let duration: TimeInterval
     let deadline: CGFloat
+    var initialCenter: CGPoint
     
     public init(
         contentInsets: UIEdgeInsets = UIEdgeInsets(top: 10.0, left: 15.0, bottom: 10.0, right: 15.0),
@@ -62,7 +63,8 @@ public struct ToastAttributes {
         position: ToastPosition = .bottom,
         positionOffset: CGFloat = .zero,
         duration: TimeInterval = 0.5,
-        deadline: CGFloat = 2.0
+        deadline: CGFloat = 2.0,
+        initialCenter: CGPoint = .zero
     ) {
         self.contentInsets = contentInsets
         self.containerInsets = containerInsets
@@ -87,5 +89,6 @@ public struct ToastAttributes {
         self.positionOffset = positionOffset
         self.duration = duration
         self.deadline = deadline
+        self.initialCenter = initialCenter
     }
 }
