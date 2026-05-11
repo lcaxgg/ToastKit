@@ -12,8 +12,6 @@ class ToastView: UIView {
     //MARK: - Properties
     
     private var attributes: ToastAttributes!
-    private var initialCenter: CGPoint = .zero
-    
     var onButtonTap: (() -> Void)?
     
     //MARK: - Initializations
@@ -170,13 +168,13 @@ extension ToastView {
         switch gesture.state {
             
         case .began:
-            initialCenter = center
+            attributes.initialCenter = center
             layer.removeAllAnimations()
             
         case .changed:
             center = CGPoint(
-                x: initialCenter.x + translation.x,
-                y: initialCenter.y
+                x: attributes.initialCenter.x + translation.x,
+                y: attributes.initialCenter.y
             )
             
             let progress = abs(translation.x) / superview.bounds.width
@@ -190,7 +188,7 @@ extension ToastView {
                 dismissWithSwipe(direction: translation.x)
             } else {
                 UIView.animate(withDuration: 0.2) {
-                    self.center = self.initialCenter
+                    self.center = self.attributes.initialCenter
                     self.alpha = 1
                 }
             }
