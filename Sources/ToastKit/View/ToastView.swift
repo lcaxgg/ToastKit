@@ -12,6 +12,8 @@ class ToastView: UIView {
     //MARK: - Properties
     
     private var attributes: ToastAttributes!
+    private var initialCenter: CGPoint = .zero
+    
     var onButtonTap: (() -> Void)?
     
     //MARK: - Initializations
@@ -31,6 +33,9 @@ class ToastView: UIView {
         let vStack = UIStackView(arrangedSubviews: [titleLabel, messageLabel])
         vStack.axis = .vertical
         vStack.spacing = attributesParam.titleMessageSpacing
+        
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
+        addGestureRecognizer(pan)
         
         var subView: UIView? = nil
         
@@ -128,7 +133,22 @@ extension ToastView {
                 }
             }
         }
-      }
+    }
+    
+    func dismissWithSwipe(direction: CGFloat) {
+        guard let superview = superview else { return }
+        
+        let targetX = direction > 0
+        ? superview.bounds.width * 1.5
+        : -superview.bounds.width * 1.5
+        
+        UIView.animate(withDuration: 0.25, animations: {
+            self.center.x = targetX
+            self.alpha = 0
+        }) { _ in
+            self.removeFromSuperview()
+        }
+    }
 }
 
 //MARK: - Private method/s
@@ -140,5 +160,43 @@ private extension ToastView {}
 extension ToastView {
     @objc private func buttonTapped() {
         onButtonTap?()
+    }
+    
+    @objc private func handlePan(_ gesture: UIPanGestureRecognizer) {
+        guard let superview = superview else { return }
+        
+        let translation = gesture.translation(in: superview)
+        
+        switch gesture.state {
+            
+        case .began:
+            initialCenter = center
+            layer.removeAllAnimations()
+            
+        case .changed:
+            center = CGPoint(
+                x: initialCenter.x + translation.x,
+                y: initialCenter.y
+            )
+            
+            let progress = abs(translation.x) / superview.bounds.width
+            alpha = 1 - progress
+            
+        case .ended, .cancelled:
+            let velocity = gesture.velocity(in: superview).x
+            let shouldDismiss = abs(translation.x) > 100 || abs(velocity) > 500
+            
+            if shouldDismiss {
+                dismissWithSwipe(direction: translation.x)
+            } else {
+                UIView.animate(withDuration: 0.2) {
+                    self.center = self.initialCenter
+                    self.alpha = 1
+                }
+            }
+            
+        default:
+            break
+        }
     }
 }
