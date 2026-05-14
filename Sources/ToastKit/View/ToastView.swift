@@ -111,7 +111,10 @@ extension ToastView {
     }
     
     func animateWith(duration: TimeInterval, deadline: CGFloat) {
+        guard !attributes.isShowing else { return }
         alpha = 0
+        
+        attributes.isShowing = true
         
         UIView.animate(withDuration: duration, animations: { [weak self] in
             guard let self = self else { return }
@@ -128,6 +131,7 @@ extension ToastView {
                     self.alpha = 0
                 }) { _ in
                     self.removeFromSuperview()
+                    self.attributes.isShowing = false
                 }
             }
         }
