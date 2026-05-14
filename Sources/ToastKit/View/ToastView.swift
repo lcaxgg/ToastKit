@@ -13,6 +13,7 @@ class ToastView: UIView {
     
     private var attributes: ToastAttributes!
     var onButtonTap: (() -> Void)?
+    var onDismiss: (() -> Void)?
     
     //MARK: - Initializations
     
@@ -111,11 +112,8 @@ extension ToastView {
     }
     
     func animateWith(duration: TimeInterval, deadline: CGFloat) {
-        guard !attributes.isShowing else { return }
         alpha = 0
-        
-        attributes.isShowing = true
-        
+                
         UIView.animate(withDuration: duration, animations: { [weak self] in
             guard let self = self else { return }
             self.alpha = 1
@@ -131,7 +129,7 @@ extension ToastView {
                     self.alpha = 0
                 }) { _ in
                     self.removeFromSuperview()
-                    self.attributes.isShowing = false
+                    self.onDismiss?()
                 }
             }
         }
@@ -149,6 +147,7 @@ extension ToastView {
             self.alpha = 0
         }) { _ in
             self.removeFromSuperview()
+            self.onDismiss?()
         }
     }
 }
