@@ -10,7 +10,8 @@ import UIKit
 public extension UIView {
     func showToastMessage(
         with attributes: ToastAttributes,
-        onButtonTap buttonAction: (() -> Void)? = nil
+        onButtonTap buttonAction: (() -> Void)? = nil,
+        onDismiss dismissAction: (() -> Void)? = nil
     ) {
         let toast = ToastView(with: attributes)
         addSubview(toast)
@@ -20,6 +21,10 @@ public extension UIView {
         
         toast.onButtonTap = {
             buttonAction?()
+        }
+        
+        toast.onDismiss = {
+            dismissAction?()
         }
     }
 }
