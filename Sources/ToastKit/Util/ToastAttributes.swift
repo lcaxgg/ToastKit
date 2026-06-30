@@ -8,6 +8,7 @@
 import UIKit
 
 public struct ToastAttributes {
+    let tag: Int
     let contentInsets: UIEdgeInsets
     let containerInsets: UIEdgeInsets
     let cornerRadius: CGFloat
@@ -40,6 +41,7 @@ public struct ToastAttributes {
     var initialCenter: CGPoint
     
     public init(
+        tag: Int = 0,
         contentInsets: UIEdgeInsets = UIEdgeInsets(top: 10.0, left: 15.0, bottom: 10.0, right: 15.0),
         containerInsets: UIEdgeInsets = UIEdgeInsets(top: .zero, left: 13.0, bottom: .zero, right: 13.0),
         cornerRadius: CGFloat = 8.0,
@@ -66,6 +68,7 @@ public struct ToastAttributes {
         deadline: CGFloat = 2.0,
         initialCenter: CGPoint = .zero
     ) {
+        self.tag = tag
         self.contentInsets = contentInsets
         self.containerInsets = containerInsets
         self.cornerRadius = cornerRadius
