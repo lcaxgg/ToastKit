@@ -19,6 +19,7 @@ class ToastView: UIView {
     
     init(with attributesParam: ToastAttributes) {
         super.init(frame: .zero)
+        tag = attributesParam.tag
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = attributesParam.backgroundColor
         layer.cornerRadius = attributesParam.cornerRadius
