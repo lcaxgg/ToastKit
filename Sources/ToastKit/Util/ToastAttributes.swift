@@ -63,7 +63,7 @@ public struct ToastAttributes {
         maximumLineHeight: CGFloat? = nil,
         lineSpacing: CGFloat? = nil,
         alignment: NSTextAlignment = .left,
-        hStackSpacing: CGFloat? = 0,
+        hStackSpacing: CGFloat? = 5.0,
         position: ToastPosition = .bottom,
         positionOffset: CGFloat = .zero,
         duration: TimeInterval = 0.5,
