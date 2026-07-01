@@ -26,6 +26,7 @@ public struct ToastAttributes {
     let minimumLineHeight: CGFloat
     let maximumLineHeight: CGFloat
     let alignment: NSTextAlignment
+    let hStackSpacing: CGFloat?
     
     let buttonText: String
     let buttonTextMinimumLineHeight: CGFloat
@@ -38,7 +39,7 @@ public struct ToastAttributes {
     
     let duration: TimeInterval
     let deadline: CGFloat
-    var initialCenter: CGPoint
+    let initialCenter: CGPoint
     
     public init(
         tag: Int = 0,
@@ -62,6 +63,7 @@ public struct ToastAttributes {
         maximumLineHeight: CGFloat? = nil,
         lineSpacing: CGFloat? = nil,
         alignment: NSTextAlignment = .left,
+        hStackSpacing: CGFloat? = 0,
         position: ToastPosition = .bottom,
         positionOffset: CGFloat = .zero,
         duration: TimeInterval = 0.5,
@@ -88,6 +90,7 @@ public struct ToastAttributes {
         self.minimumLineHeight = minimumLineHeight ?? .zero
         self.maximumLineHeight = maximumLineHeight ?? .zero
         self.alignment = alignment
+        self.hStackSpacing = hStackSpacing
         self.position = position
         self.positionOffset = positionOffset
         self.duration = duration
