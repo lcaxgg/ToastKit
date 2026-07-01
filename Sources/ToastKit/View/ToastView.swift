@@ -43,6 +43,7 @@ class ToastView: UIView {
             let hStack = UIStackView(arrangedSubviews: [vStack, button])
             hStack.axis = .horizontal
             hStack.alignment = .center
+            hStack.spacing = attributes.hStackSpacing ?? .zero
             
             subView = hStack
         } else {
