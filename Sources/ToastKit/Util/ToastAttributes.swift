@@ -40,7 +40,7 @@ public struct ToastAttributes {
     
     let duration: TimeInterval
     let deadline: CGFloat
-    let initialCenter: CGPoint
+    var initialCenter: CGPoint
     
     public init(
         tag: Int = 0,
