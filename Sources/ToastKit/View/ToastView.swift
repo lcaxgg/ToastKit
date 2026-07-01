@@ -163,6 +163,15 @@ private extension ToastView {}
 extension ToastView {
     @objc private func buttonTapped() {
         onButtonTap?()
+        
+        if attributes.shouldDismissOnButtonTap {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                guard let self else { return }
+                
+                self.removeFromSuperview()
+                self.onDismiss?()
+            }
+        }
     }
     
     @objc private func handlePan(_ gesture: UIPanGestureRecognizer) {

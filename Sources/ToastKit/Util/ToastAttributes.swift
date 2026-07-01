@@ -33,6 +33,7 @@ public struct ToastAttributes {
     let buttonTextMaximumLineHeight: CGFloat
     let buttonTextFont: UIFont
     let showButton: Bool
+    let shouldDismissOnButtonTap: Bool
     
     let position: ToastPosition
     let positionOffset: CGFloat
@@ -58,6 +59,7 @@ public struct ToastAttributes {
         buttonTextMaximumLineHeight: CGFloat? = nil,
         buttonTextFont: UIFont = .systemFont(ofSize: 15.0),
         showButton: Bool = false,
+        shouldDismissOnButtonTap: Bool = false,
         kern: CGFloat = .zero,
         minimumLineHeight: CGFloat? = nil,
         maximumLineHeight: CGFloat? = nil,
@@ -86,6 +88,7 @@ public struct ToastAttributes {
         self.buttonTextMaximumLineHeight = buttonTextMaximumLineHeight ?? .zero
         self.buttonTextFont = buttonTextFont
         self.showButton = showButton
+        self.shouldDismissOnButtonTap = shouldDismissOnButtonTap
         self.kern = kern
         self.minimumLineHeight = minimumLineHeight ?? .zero
         self.maximumLineHeight = maximumLineHeight ?? .zero
