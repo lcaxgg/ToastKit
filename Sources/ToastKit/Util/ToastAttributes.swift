@@ -122,13 +122,15 @@ public struct StackingToastAttributes {
     let insertionPosition: StackingToastInsertionPosition
     let shouldSlideOnRemoval: Bool?
     let nextDismissalDeadline: CGFloat
-
+    let shouldDismissAllOnButtonTap: Bool?
+    
     public init(
         initialTag: Int = 8000,
         count: Int = 3,
         spacing: CGFloat = 8,
         insertionPosition: StackingToastInsertionPosition = .bottom,
         shouldSlideOnRemoval: Bool? = false,
+        shouldDismissAllOnButtonTap: Bool? = false,
         nextDismissalDeadline: CGFloat = 0.05
     ) {
         self.initialTag = initialTag
@@ -136,6 +138,7 @@ public struct StackingToastAttributes {
         self.spacing = spacing
         self.insertionPosition = insertionPosition
         self.shouldSlideOnRemoval = shouldSlideOnRemoval
+        self.shouldDismissAllOnButtonTap = shouldDismissAllOnButtonTap
         self.nextDismissalDeadline = nextDismissalDeadline
     }
 }
