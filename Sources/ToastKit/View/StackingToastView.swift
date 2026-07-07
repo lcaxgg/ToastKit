@@ -103,7 +103,7 @@ private extension StackingToastView {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = attributes.backgroundColor
         view.layer.cornerRadius = attributes.cornerRadius
-        view.setWidth(layer.frame.width)
+        view.setCustomWidth(layer.frame.width)
         
         let titleLabel = setupTitleLabel(attributes)
         let messageLabel = setupMessageLabel(attributes)

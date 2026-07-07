@@ -22,12 +22,12 @@ public extension UIView {
         ])
     }
     
-    func setWidth(_ width: CGFloat) {
+    func setCustomWidth(_ width: CGFloat) {
         translatesAutoresizingMaskIntoConstraints = false
         widthAnchor.constraint(equalToConstant: width).isActive = true
     }
     
-    func setHeight(_ height: CGFloat) {
+    func setCustomHeight(_ height: CGFloat) {
         translatesAutoresizingMaskIntoConstraints = false
         heightAnchor.constraint(equalToConstant: height).isActive = true
     }
