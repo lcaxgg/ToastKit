@@ -13,8 +13,6 @@ public class StackingToastView: UIView {
     
     private var attributes: ToastAttributes!
     private var dismissWorkItem: DispatchWorkItem?
-    
-    var onButtonTap: (() -> Void)?
     public var onDismiss: ((_ didRemoveAllToasts: Bool) -> Void)?
     
     var vStack: UIStackView = {
@@ -57,25 +55,25 @@ extension StackingToastView {
         return toast
     }
     
-    public func addToast() {
-        let bgView = setupBgView()
-        
+    public func addToast(
+        onButtonTap: (() -> Void)? = nil
+    ) {
+        let bgView = setupBgView(onButtonTap: onButtonTap)
+
         let pan = UIPanGestureRecognizer(
             target: self,
             action: #selector(handlePan(_:))
         )
-        
+
         bgView.addGestureRecognizer(pan)
-        
+
         switch attributes.stackingToastAttributes?.insertionPosition {
         case .top:
             vStack.insertArrangedSubview(bgView, at: 0)
-        case .bottom:
+        case .bottom, .none:
             vStack.addArrangedSubview(bgView)
-        case .none:
-            break
         }
-        
+
         animateAddedToast(
             bgView,
             duration: attributes.duration,
@@ -97,7 +95,9 @@ private extension StackingToastView {
         vStack.spacing = attributes.stackingToastAttributes?.spacing ?? .zero
     }
     
-    func setupBgView() -> UIView {
+    func setupBgView(
+        onButtonTap: (() -> Void)?
+    ) -> UIView {
         let view = UIView()
         view.tag = attributes.stackingToastAttributes?.initialTag ?? .zero
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -107,7 +107,7 @@ private extension StackingToastView {
         
         let titleLabel = setupTitleLabel(attributes)
         let messageLabel = setupMessageLabel(attributes)
-        let button = setupButton(attributes)
+        let button = setupButton(view, attributes, onButtonTap)
         
         let vStack = UIStackView(arrangedSubviews: [titleLabel, messageLabel])
         vStack.axis = .vertical
@@ -141,22 +141,6 @@ private extension StackingToastView {
         return view
     }
     
-    func setupStackingView() {
-        guard let count = attributes.stackingToastAttributes?.count else { return }
-        
-        for i in 0..<count {
-            let bgView = setupBgView()
-            
-            let pan = UIPanGestureRecognizer(
-                target: self,
-                action: #selector(handlePan(_:))
-            )
-            
-            bgView.addGestureRecognizer(pan)
-            vStack.addArrangedSubview(bgView)
-        }
-    }
-    
     func setupTitleLabel(_ attributes: ToastAttributes) -> UILabel {
         let titleLabel = UILabel()
         titleLabel.numberOfLines = .zero
@@ -171,13 +155,43 @@ private extension StackingToastView {
         return messageLabel
     }
     
-    func setupButton(_ attributes: ToastAttributes) -> UIButton {
+    private func setupButton(
+        _ view: UIView,
+        _ attributes: ToastAttributes,
+        _ onButtonTap: (() -> Void)?
+    ) -> UIButton {
         let button = UIButton(type: .system)
+
         button.tintColor = attributes.foregroundColor
-        button.addTarget(nil, action: #selector(buttonTapped), for: .touchUpInside)
         button.setContentHuggingPriority(.required, for: .horizontal)
         button.setContentCompressionResistancePriority(.required, for: .horizontal)
         button.configureButtonText(attributes)
+
+        if #available(iOS 14.0, *) {
+            button.addAction(
+                UIAction { _ in
+                    onButtonTap?()
+                    
+                    if attributes.shouldDismissOnButtonTap {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                            guard let self else { return }
+                            
+                            self.vStack.removeArrangedSubview(view)
+                            view.removeFromSuperview()
+                            
+                            if self.vStack.arrangedSubviews.isEmpty {
+                                self.removeFromSuperview()
+                                self.onDismiss?(true)
+                            }
+                        }
+                    }
+                },
+                for: .touchUpInside
+            )
+        } else {
+            // Use your existing target/action approach if you support iOS 13
+        }
+
         return button
     }
 }
@@ -356,19 +370,6 @@ private extension StackingToastView {
 //MARK: - Action/s
 
 extension StackingToastView {
-    @objc private func buttonTapped() {
-        onButtonTap?()
-        
-        if attributes.shouldDismissOnButtonTap {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-                guard let self else { return }
-                
-                self.removeFromSuperview()
-                self.onDismiss?(false)
-            }
-        }
-    }
-    
     @objc private func handlePan(_ gesture: UIPanGestureRecognizer) {
         guard
             let view = gesture.view,

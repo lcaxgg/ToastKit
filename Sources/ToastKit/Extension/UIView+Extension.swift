@@ -53,24 +53,4 @@ public extension UIView {
             dismissAction?()
         }
     }
-    
-    func showStackingToastMessage(
-        with attributes: ToastAttributes,
-        onButtonTap buttonAction: (() -> Void)? = nil,
-        onDismiss dismissAction: (() -> Void)? = nil
-    ) {
-        let toast = StackingToastView(with: attributes)
-        addSubview(toast)
-        
-        toast.setConstraints(in: self)
-        toast.animateWith(duration: attributes.duration, deadline: attributes.deadline)
-        
-        toast.onButtonTap = {
-            buttonAction?()
-        }
-        
-//        toast.onDismiss = {
-//            dismissAction?()
-//        }
-    }
 }
