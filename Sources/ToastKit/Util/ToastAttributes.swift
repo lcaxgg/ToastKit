@@ -36,11 +36,14 @@ public struct ToastAttributes {
     let shouldDismissOnButtonTap: Bool
     
     let position: ToastPosition
-    let positionOffset: CGFloat
+    var positionOffset: CGFloat
     
     let duration: TimeInterval
     let deadline: CGFloat
     var initialCenter: CGPoint
+    
+    let stackingToastAttributes: StackingToastAttributes?
+    let slideDirection: SlideDirection?
     
     public init(
         tag: Int = 0,
@@ -70,7 +73,9 @@ public struct ToastAttributes {
         positionOffset: CGFloat = .zero,
         duration: TimeInterval = 0.5,
         deadline: CGFloat = 2.0,
-        initialCenter: CGPoint = .zero
+        initialCenter: CGPoint = .zero,
+        stackingToastAttributes: StackingToastAttributes? = nil,
+        slideDirection: SlideDirection = .left
     ) {
         self.tag = tag
         self.contentInsets = contentInsets
@@ -99,5 +104,32 @@ public struct ToastAttributes {
         self.duration = duration
         self.deadline = deadline
         self.initialCenter = initialCenter
+        self.stackingToastAttributes = stackingToastAttributes
+        self.slideDirection = slideDirection
+    }
+}
+
+public struct StackingToastAttributes {
+    let initialTag: Int
+    let count: Int
+    let spacing: CGFloat
+    let insertionPosition: StackingToastInsertionPosition
+    let shouldSlideOnRemoval: Bool?
+    let nextDismissalDeadline: CGFloat
+
+    public init(
+        initialTag: Int = 8000,
+        count: Int = 3,
+        spacing: CGFloat = 8,
+        insertionPosition: StackingToastInsertionPosition = .bottom,
+        shouldSlideOnRemoval: Bool? = false,
+        nextDismissalDeadline: CGFloat = 0.05
+    ) {
+        self.initialTag = initialTag
+        self.count = count
+        self.spacing = spacing
+        self.insertionPosition = insertionPosition
+        self.shouldSlideOnRemoval = shouldSlideOnRemoval
+        self.nextDismissalDeadline = nextDismissalDeadline
     }
 }

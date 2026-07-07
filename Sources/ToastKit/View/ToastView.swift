@@ -29,7 +29,7 @@ class ToastView: UIView {
         let titleLabel = setupTitleLabel(attributesParam)
         let messageLabel = setupMessageLabel(attributesParam)
         let button = setupButton(attributesParam)
-    
+        
         let vStack = UIStackView(arrangedSubviews: [titleLabel, messageLabel])
         vStack.axis = .vertical
         vStack.spacing = attributesParam.titleMessageSpacing
@@ -43,7 +43,7 @@ class ToastView: UIView {
             let hStack = UIStackView(arrangedSubviews: [vStack, button])
             hStack.axis = .horizontal
             hStack.alignment = .center
-            hStack.spacing = attributes.hStackSpacing ?? .zero
+            hStack.spacing = attributesParam.hStackSpacing ?? .zero
             
             subView = hStack
         } else {
@@ -51,7 +51,7 @@ class ToastView: UIView {
         }
         
         guard let subView else { return }
-       
+        
         addSubview(subView)
         subView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -102,7 +102,7 @@ extension ToastView {
     func setConstraints(in view: UIView) {
         let bottomInset = view.safeAreaInsets.bottom
         let bottomOffset = (bottomInset > 0 ? -attributes.positionOffset : -(attributes.positionOffset + 16))
-
+        
         if attributes.containerInsets == .zero {
             centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         } else {
@@ -115,7 +115,7 @@ extension ToastView {
     
     func animateWith(duration: TimeInterval, deadline: CGFloat) {
         alpha = 0
-                
+        
         UIView.animate(withDuration: duration, animations: { [weak self] in
             guard let self = self else { return }
             self.alpha = 1
@@ -180,11 +180,9 @@ extension ToastView {
         let translation = gesture.translation(in: superview)
         
         switch gesture.state {
-            
         case .began:
             attributes.initialCenter = center
             layer.removeAllAnimations()
-            
         case .changed:
             center = CGPoint(
                 x: attributes.initialCenter.x + translation.x,
@@ -193,7 +191,6 @@ extension ToastView {
             
             let progress = abs(translation.x) / superview.bounds.width
             alpha = 1 - progress
-            
         case .ended, .cancelled:
             let velocity = gesture.velocity(in: superview).x
             let shouldDismiss = abs(translation.x) > 100 || abs(velocity) > 500
@@ -206,7 +203,6 @@ extension ToastView {
                     self.alpha = 1
                 }
             }
-            
         default:
             break
         }
