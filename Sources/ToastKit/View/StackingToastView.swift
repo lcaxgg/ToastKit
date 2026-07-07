@@ -11,7 +11,7 @@ public class StackingToastView: UIView {
     
     //MARK: - Properties
     
-    private var attributes: ToastAttributes!
+    public var attributes: ToastAttributes!
     private var dismissWorkItem: DispatchWorkItem?
     public var onDismiss: ((_ didRemoveAllToasts: Bool) -> Void)?
     
@@ -58,27 +58,43 @@ extension StackingToastView {
     public func addToast(
         onButtonTap: (() -> Void)? = nil
     ) {
+        if vStack.arrangedSubviews.count >= 3 {
+            guard let lastToast = vStack.arrangedSubviews.last else { return }
+            updateToast(lastToast)
+            
+            resetDismissTimer(
+                duration: attributes.duration,
+                deadline: attributes.deadline
+            )
+            return
+        }
+        
         let bgView = setupBgView(onButtonTap: onButtonTap)
-
+        
         let pan = UIPanGestureRecognizer(
             target: self,
             action: #selector(handlePan(_:))
         )
-
+        
         bgView.addGestureRecognizer(pan)
-
+        
         switch attributes.stackingToastAttributes?.insertionPosition {
         case .top:
             vStack.insertArrangedSubview(bgView, at: 0)
         case .bottom, .none:
             vStack.addArrangedSubview(bgView)
         }
-
+        
         animateAddedToast(
             bgView,
             duration: attributes.duration,
             deadline: attributes.deadline
         )
+    }
+    
+    private func updateToast(_ toast: UIView) {
+        (toast.viewWithTag(StackingToastContentTag.title) as? UILabel)?.text = attributes.title
+        (toast.viewWithTag(StackingToastContentTag.message) as? UILabel)?.text = attributes.message
     }
 }
 
@@ -106,8 +122,13 @@ private extension StackingToastView {
         view.setCustomWidth(layer.frame.width)
         
         let titleLabel = setupTitleLabel(attributes)
+        titleLabel.tag = StackingToastContentTag.title
+        
         let messageLabel = setupMessageLabel(attributes)
+        messageLabel.tag = StackingToastContentTag.message
+        
         let button = setupButton(view, attributes, onButtonTap)
+        button.tag = StackingToastContentTag.button
         
         let vStack = UIStackView(arrangedSubviews: [titleLabel, messageLabel])
         vStack.axis = .vertical
@@ -161,12 +182,12 @@ private extension StackingToastView {
         _ onButtonTap: (() -> Void)?
     ) -> UIButton {
         let button = UIButton(type: .system)
-
+        
         button.tintColor = attributes.foregroundColor
         button.setContentHuggingPriority(.required, for: .horizontal)
         button.setContentCompressionResistancePriority(.required, for: .horizontal)
         button.configureButtonText(attributes)
-
+        
         if #available(iOS 14.0, *) {
             button.addAction(
                 UIAction { _ in
@@ -196,7 +217,7 @@ private extension StackingToastView {
         } else {
             // Use your existing target/action approach if you support iOS 13
         }
-
+        
         return button
     }
 }
@@ -326,11 +347,11 @@ private extension StackingToastView {
         else {
             return
         }
-
+        
         let targetX: CGFloat = slideDirection == .left
-            ? -superview.bounds.width * 1.5
-            : superview.bounds.width * 1.5
-
+        ? -superview.bounds.width * 1.5
+        : superview.bounds.width * 1.5
+        
         UIView.animate(withDuration: duration, animations: {
             view.center.x = targetX
             view.alpha = 0
@@ -356,13 +377,13 @@ private extension StackingToastView {
     ) {
         vStack.removeArrangedSubview(view)
         view.removeFromSuperview()
-
+        
         if vStack.arrangedSubviews.isEmpty {
             removeFromSuperview()
             onDismiss?(true)
         } else {
             onDismiss?(false)
-
+            
             // Schedule dismissal of the next toast
             resetDismissTimer(
                 duration: duration,

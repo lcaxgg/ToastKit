@@ -1,11 +1,13 @@
 //
-//  ToastPosition.swift
+//  Enum.swift
 //  ToastKit
 //
 //  Created by Jayvee on 7/9/25.
 //
 
 import UIKit
+
+// MARK: - Position
 
 public enum ToastPosition {
     case top
@@ -30,4 +32,12 @@ public enum SlideDirection {
             return 1
         }
     }
+}
+
+// MARK: - Tag
+
+public enum StackingToastContentTag {
+    static let title = 9001
+    static let message = 9002
+    static let button = 9003
 }

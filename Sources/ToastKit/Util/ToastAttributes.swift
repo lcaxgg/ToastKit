@@ -7,6 +7,12 @@
 
 import UIKit
 
+public struct ToastContent {
+    let title: String
+    let message: String
+    let buttonTitle: String?
+}
+
 public struct ToastAttributes {
     let tag: Int
     let contentInsets: UIEdgeInsets
@@ -16,8 +22,8 @@ public struct ToastAttributes {
     let backgroundColor: UIColor
     let foregroundColor: UIColor
     
-    let title: String?
-    let message: String
+    public var title: String?
+    public var message: String
     let titleFont: UIFont
     let messageFont: UIFont
     let titleMessageSpacing: CGFloat
@@ -28,7 +34,7 @@ public struct ToastAttributes {
     let alignment: NSTextAlignment
     let hStackSpacing: CGFloat?
     
-    let buttonText: String
+    public var buttonText: String
     let buttonTextMinimumLineHeight: CGFloat
     let buttonTextMaximumLineHeight: CGFloat
     let buttonTextFont: UIFont
