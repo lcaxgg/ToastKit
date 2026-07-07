@@ -172,6 +172,11 @@ private extension StackingToastView {
                 UIAction { _ in
                     onButtonTap?()
                     
+                    self.resetDismissTimer(
+                        duration: attributes.duration,
+                        deadline: attributes.deadline
+                    )
+                    
                     if attributes.shouldDismissOnButtonTap {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
                             guard let self else { return }
