@@ -198,7 +198,14 @@ private extension StackingToastView {
                         deadline: attributes.deadline
                     )
                     
-                    if attributes.shouldDismissOnButtonTap {
+                    if attributes.stackingToastAttributes?.shouldDismissAllOnButtonTap == true {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                            guard let self else { return }
+                            
+                            self.removeFromSuperview()
+                            self.onDismiss?(true)
+                        }
+                    } else if attributes.shouldDismissOnButtonTap == true {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
                             guard let self else { return }
                             
