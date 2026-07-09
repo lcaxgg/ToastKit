@@ -148,15 +148,15 @@ showStackingToast(message: "dynamic value")
 
 <table>
   <tr>
-    <th style="text-align:center">Simple Toast</th>
-    <th style="text-align:center">Toast with Button</th>
+    <th style="text-align:center">Truncated</th>
+    <th style="text-align:center">Full</th>
   </tr>
   <tr>
     <td align="center">
-      <img width="346" alt="Screenshot 2025-07-09 at 5 05 03 PM" src="https://github.com/user-attachments/assets/9857012c-97f7-4535-ad78-730fce3d41ad" />
+     <img width="1320" height="682" alt="Simulator Screenshot - ip16 pmx - 2026-07-09 at 14 48 51" src="https://github.com/user-attachments/assets/6f09acfb-b1ec-46e7-855b-38b199a9bab7" />
     </td>
     <td align="center">
-      <img width="341" alt="Screenshot 2025-07-09 at 5 05 26 PM" src="https://github.com/user-attachments/assets/a5325d56-e855-4567-982a-45f00dfbb726" />
+     <img width="1320" height="1436" alt="Simulator Screenshot - ip16 pmx - 2026-07-09 at 14 49 13" src="https://github.com/user-attachments/assets/79b99ef2-e616-440f-9790-3ae57447e42c" />
     </td>
   </tr>
 </table>
