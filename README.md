@@ -33,70 +33,115 @@ Or use Xcode:
 
 ---
 
-## 🛠️ Usage
-
-You can easily extend `ToastAttributes` to create your own custom initializer for more streamlined usage!
+## 🛠️ Single toast usage
 
 ```swift
-import ToastKit
-
-extension ToastAttributes {
-    static func customInit(
-        contentInsets: UIEdgeInsets = .zero,
-        containerInsets: UIEdgeInsets = .zero,
-        cornerRadius: CGFloat = 0,
-        backgroundColor: UIColor = .black,
-        foregroundColor: UIColor = .white,
-        titleMessageSpacing: CGFloat = 0,
-        title: String? = nil,
-        message: String,
-        showButton: Bool = false,
-        titleFont: UIFont = UIFont.systemFont(ofSize: 0, weight: .bold),
-        messageFont: UIFont = UIFont.systemFont(ofSize: 0),
-        buttonText: String = "Button",
-        buttonTextFont: UIFont = UIFont.systemFont(ofSize: 0),
-        position: ToastPosition = .bottom,
-        positionOffset: CGFloat = 0,
-        duration: TimeInterval = 0,
-        deadline: CGFloat = 0
-    ) -> ToastAttributes {
-        return ToastAttributes(
-            contentInsets: contentInsets,
-            containerInsets: containerInsets,
-            cornerRadius: cornerRadius,
-            backgroundColor: backgroundColor,
-            foregroundColor: foregroundColor,
-            title: title,
-            message: message,
-            titleFont: titleFont,
-            messageFont: messageFont,
-            titleMessageSpacing: titleMessageSpacing,
-            buttonText: buttonText,
-            buttonTextFont: buttonTextFont,
-            showButton: showButton,
-            position: position,
-            positionOffset: positionOffset,
-            duration: duration,
-            deadline: deadline
-        )
-    }
-}
-```
-
-Here’s how you can use your custom initializer to show a toast:
-
-```swift
-let attributes = ToastAttributes.customInit(
-    title: "Title here",
-    message: "message here",
-    showButton: true
+let attributes = ToastAttributes(
+    layout: .init(contentInsets: UIEdgeInsets(top: 12.5, left: 15.0, bottom: 12.5, right: 15.0),
+                  hStackSpacing: 16),
+            
+    text: .init(message: .init(value: "message here",
+                              font: UIFont.systemFont(ofSize: 14),
+                              kern: 0.2,
+                              lineBreakMode: .byTruncatingTail,
+                              numberOfLines: 2,
+                              minimumLineHeight: 19,
+                              maximumLineHeight: 19)),
+            
+    button: .init(text: "Button text here",
+                  font: UIFont.systemFont(ofSize: 13),
+                  minimumLineHeight: 19,
+                  maximumLineHeight: 19,
+                  isVisible: true),
+            
+    timing: .init(animationDuration: 0.2,
+                  dismissalDeadline: 3)
 )
 
-view.showToastMessage(with: attributes, onButtonTap: {
-    print("Button tapped!")
-})
+view.showToastMessage(
+    with: attributes,
+    onButtonTap: {
+        // do some thing here
+    },
+    onDismiss: {
+        // do some thing here
+    }
+)
 ```
+---
 
+## 🖼️ Sample Screenshots
+
+<table>
+  <tr>
+    <th style="text-align:center">Simple Toast</th>
+    <th style="text-align:center">Toast with Button</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img width="346" alt="Screenshot 2025-07-09 at 5 05 03 PM" src="https://github.com/user-attachments/assets/9857012c-97f7-4535-ad78-730fce3d41ad" />
+    </td>
+    <td align="center">
+      <img width="341" alt="Screenshot 2025-07-09 at 5 05 26 PM" src="https://github.com/user-attachments/assets/a5325d56-e855-4567-982a-45f00dfbb726" />
+    </td>
+  </tr>
+</table>
+
+---
+
+## 🛠️ Stacking toast usage
+
+```swift
+private var stackingToast: StackingToastView?
+
+func showStackingToast(message: String) {
+    if stackingToast == nil {
+        let attributes = ToastAttributes(
+            layout: .init(contentInsets: UIEdgeInsets(top: 12.5, left: 15, bottom: 12.5, right: 15),
+                          hStackSpacing: 16),
+            
+            text: .init(message: .init(value: message,
+                                       font: UIFont.systemFont(ofSize: 15),
+                                       kern: 0.2,
+                                       lineBreakMode: .byTruncatingTail,
+                                       numberOfLines: 2,
+                                       minimumLineHeight: 19,
+                                       maximumLineHeight: 19)),
+            
+            button: .init(text: "View",
+                          font: UIFont.systemFont(ofSize: 13.5),
+                          minimumLineHeight: 19,
+                          maximumLineHeight: 19,
+                          isVisible: true),
+            
+            timing: .init(animationDuration: 0.2,
+                          dismissalDeadline: 3),
+            
+            stacking: .init(count: 3,
+                            shouldSlideOnRemoval: true,
+                            shouldDismissAllOnButtonTap: true)
+        )
+        
+        stackingToast = StackingToastView.make(
+            in: view,
+            attributes: attributes
+        )
+    } else {
+        stackingToast?.attributes.text.message.value = message
+    }
+    
+    stackingToast?.addToast(onButtonTap: {
+        // do some thing here
+    })
+    
+    stackingToast?.onDismiss = { [weak self] didRemoveAllToasts in
+        guard didRemoveAllToasts else { return }
+        self?.stackingToast = nil
+    }
+}
+
+showStackingToast(message: "dynamic value")
+```
 ---
 
 ## 🖼️ Sample Screenshots
