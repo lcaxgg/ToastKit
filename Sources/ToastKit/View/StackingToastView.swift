@@ -26,7 +26,7 @@ public class StackingToastView: UIView {
     
     public init(with attributesParam: ToastAttributes) {
         super.init(frame: .zero)
-        tag = attributesParam.stackingToastAttributes?.initialTag ?? .zero
+        tag = attributesParam.stacking?.initialTag ?? .zero
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .clear
         
@@ -58,16 +58,9 @@ extension StackingToastView {
     public func addToast(
         onButtonTap: (() -> Void)? = nil
     ) {
-        if vStack.arrangedSubviews.count >= 3 {
-            guard let lastToast = vStack.arrangedSubviews.last else { return }
-            updateToast(lastToast)
-            
-            resetDismissTimer(
-                duration: attributes.duration,
-                deadline: attributes.deadline
-            )
-            return
-        }
+        guard !updateLastToastIfNeeded() else {
+             return
+         }
         
         let bgView = setupBgView(onButtonTap: onButtonTap)
         
@@ -78,7 +71,7 @@ extension StackingToastView {
         
         bgView.addGestureRecognizer(pan)
         
-        switch attributes.stackingToastAttributes?.insertionPosition {
+        switch attributes.stacking?.insertionPosition {
         case .top:
             vStack.insertArrangedSubview(bgView, at: 0)
         case .bottom, .none:
@@ -87,14 +80,34 @@ extension StackingToastView {
         
         animateAddedToast(
             bgView,
-            duration: attributes.duration,
-            deadline: attributes.deadline
+            duration: attributes.timing.animationDuration,
+            deadline: attributes.timing.dismissalDeadline
         )
     }
     
+    @discardableResult
+    private func updateLastToastIfNeeded() -> Bool {
+        guard
+            let count = attributes.stacking?.count,
+            vStack.arrangedSubviews.count >= count,
+            let lastToast = vStack.arrangedSubviews.last
+        else {
+            return false
+        }
+
+        updateToast(lastToast)
+
+        resetDismissTimer(
+            duration: attributes.timing.animationDuration,
+            deadline: attributes.timing.dismissalDeadline
+        )
+
+        return true
+    }
+    
     private func updateToast(_ toast: UIView) {
-        (toast.viewWithTag(StackingToastContentTag.title) as? UILabel)?.text = attributes.title
-        (toast.viewWithTag(StackingToastContentTag.message) as? UILabel)?.text = attributes.message
+        (toast.viewWithTag(StackingToastContentTag.title) as? UILabel)?.text = attributes.text.title.value
+        (toast.viewWithTag(StackingToastContentTag.message) as? UILabel)?.text = attributes.text.message.value
     }
 }
 
@@ -108,17 +121,17 @@ private extension StackingToastView {
     func setupVStack() {
         addSubview(vStack)
         vStack.pinToEdges(of: self)
-        vStack.spacing = attributes.stackingToastAttributes?.spacing ?? .zero
+        vStack.spacing = attributes.stacking?.spacing ?? .zero
     }
     
     func setupBgView(
         onButtonTap: (() -> Void)?
     ) -> UIView {
         let view = UIView()
-        view.tag = attributes.stackingToastAttributes?.initialTag ?? .zero
+        view.tag = attributes.stacking?.initialTag ?? .zero
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = attributes.backgroundColor
-        view.layer.cornerRadius = attributes.cornerRadius
+        view.backgroundColor = attributes.appearance.backgroundColor
+        view.layer.cornerRadius = attributes.layout.cornerRadius
         view.setCustomWidth(layer.frame.width)
         
         let titleLabel = setupTitleLabel(attributes)
@@ -132,15 +145,15 @@ private extension StackingToastView {
         
         let vStack = UIStackView(arrangedSubviews: [titleLabel, messageLabel])
         vStack.axis = .vertical
-        vStack.spacing = attributes.titleMessageSpacing
+        vStack.spacing = attributes.layout.titleMessageSpacing
         
         var subView: UIView? = nil
         
-        if attributes.showButton {
+        if attributes.button.isVisible {
             let hStack = UIStackView(arrangedSubviews: [vStack, button])
             hStack.axis = .horizontal
             hStack.alignment = .center
-            hStack.spacing = attributes.hStackSpacing ?? .zero
+            hStack.spacing = attributes.layout.hStackSpacing ?? .zero
             
             subView = hStack
         } else {
@@ -153,10 +166,10 @@ private extension StackingToastView {
         subView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            subView.topAnchor.constraint(equalTo: view.topAnchor, constant: attributes.contentInsets.top),
-            subView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -attributes.contentInsets.bottom),
-            subView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: attributes.contentInsets.left),
-            subView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -attributes.contentInsets.right)
+            subView.topAnchor.constraint(equalTo: view.topAnchor, constant: attributes.layout.contentInsets.top),
+            subView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -attributes.layout.contentInsets.bottom),
+            subView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: attributes.layout.contentInsets.left),
+            subView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -attributes.layout.contentInsets.right)
         ])
         
         return view
@@ -164,14 +177,12 @@ private extension StackingToastView {
     
     func setupTitleLabel(_ attributes: ToastAttributes) -> UILabel {
         let titleLabel = UILabel()
-        titleLabel.numberOfLines = .zero
         titleLabel.configureTitle(attributes)
         return titleLabel
     }
     
     func setupMessageLabel(_ attributes: ToastAttributes) -> UILabel {
         let messageLabel = UILabel()
-        messageLabel.numberOfLines = .zero
         messageLabel.configureMessage(attributes)
         return messageLabel
     }
@@ -182,36 +193,37 @@ private extension StackingToastView {
         _ onButtonTap: (() -> Void)?
     ) -> UIButton {
         let button = UIButton(type: .system)
-        
-        button.tintColor = attributes.foregroundColor
+
+        button.tintColor = attributes.appearance.foregroundColor
         button.setContentHuggingPriority(.required, for: .horizontal)
         button.setContentCompressionResistancePriority(.required, for: .horizontal)
         button.configureButtonText(attributes)
-        
+
         if #available(iOS 14.0, *) {
             button.addAction(
-                UIAction { _ in
+                UIAction { [weak self] _ in
+                    guard let self else { return }
+
                     onButtonTap?()
-                    
+
                     self.resetDismissTimer(
-                        duration: attributes.duration,
-                        deadline: attributes.deadline
+                        duration: attributes.timing.animationDuration,
+                        deadline: attributes.timing.dismissalDeadline
                     )
-                    
-                    if attributes.stackingToastAttributes?.shouldDismissAllOnButtonTap == true {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-                            guard let self else { return }
-                            
+
+                    if attributes.stacking?.shouldDismissAllOnButtonTap == true {
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             self.removeFromSuperview()
                             self.onDismiss?(true)
                         }
-                    } else if attributes.shouldDismissOnButtonTap == true {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-                            guard let self else { return }
-                            
+
+                    } else if attributes.button.dismissOnTap {
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             self.vStack.removeArrangedSubview(view)
                             view.removeFromSuperview()
-                            
+
                             if self.vStack.arrangedSubviews.isEmpty {
                                 self.removeFromSuperview()
                                 self.onDismiss?(true)
@@ -222,9 +234,9 @@ private extension StackingToastView {
                 for: .touchUpInside
             )
         } else {
-            // Use your existing target/action approach if you support iOS 13
+            // iOS 13 fallback
         }
-        
+
         return button
     }
 }
@@ -234,13 +246,13 @@ private extension StackingToastView {
 extension StackingToastView {
     public func setConstraints(in view: UIView) {
         let bottomInset = view.safeAreaInsets.bottom
-        let bottomOffset = (bottomInset > 0 ? -attributes.positionOffset : -(attributes.positionOffset + 16))
+        let bottomOffset = (bottomInset > 0 ? -attributes.position.offset : -(attributes.position.offset + 16))
         
-        if attributes.containerInsets == .zero {
+        if attributes.layout.containerInsets == .zero {
             centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         } else {
-            leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: attributes.containerInsets.left).isActive = true
-            trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -attributes.containerInsets.right).isActive = true
+            leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: attributes.layout.containerInsets.left).isActive = true
+            trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -attributes.layout.containerInsets.right).isActive = true
         }
         
         bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: bottomOffset).isActive = true
@@ -329,7 +341,7 @@ private extension StackingToastView {
             
             guard let view = self.vStack.arrangedSubviews.first else { return }
             
-            if attributes.stackingToastAttributes?.shouldSlideOnRemoval == true {
+            if attributes.stacking?.shouldSlideOnRemoval == true {
                 self.removeToastSliding(view, duration)
             } else {
                 self.removeToastFading(view, duration)
@@ -350,7 +362,7 @@ private extension StackingToastView {
     ) {
         guard
             let superview = view.superview,
-            let slideDirection = attributes.slideDirection
+            let slideDirection = attributes.animation.slideDirection
         else {
             return
         }
@@ -394,7 +406,7 @@ private extension StackingToastView {
             // Schedule dismissal of the next toast
             resetDismissTimer(
                 duration: duration,
-                deadline: attributes.stackingToastAttributes?.nextDismissalDeadline ?? 0.05
+                deadline: attributes.stacking?.nextDismissalDeadline ?? 0.05
             )
         }
     }
@@ -415,12 +427,12 @@ extension StackingToastView {
         
         switch gesture.state {
         case .began:
-            attributes.initialCenter = view.center
+            attributes.position.initialCenter = view.center
             view.layer.removeAllAnimations()
         case .changed:
             view.center = CGPoint(
-                x: attributes.initialCenter.x + translation.x,
-                y: attributes.initialCenter.y
+                x: attributes.position.initialCenter.x + translation.x,
+                y: attributes.position.initialCenter.y
             )
             
             let progress = abs(translation.x) / superview.bounds.width
@@ -433,7 +445,7 @@ extension StackingToastView {
                 dismiss(view: view, direction: translation.x)
             } else {
                 UIView.animate(withDuration: 0.2) {
-                    view.center = self.attributes.initialCenter
+                    view.center = self.attributes.position.initialCenter
                     view.alpha = 1
                 }
             }

@@ -21,8 +21,8 @@ class ToastView: UIView {
         super.init(frame: .zero)
         tag = attributesParam.tag
         translatesAutoresizingMaskIntoConstraints = false
-        backgroundColor = attributesParam.backgroundColor
-        layer.cornerRadius = attributesParam.cornerRadius
+        backgroundColor = attributesParam.appearance.backgroundColor
+        layer.cornerRadius = attributesParam.layout.cornerRadius
         
         attributes = attributesParam
         
@@ -32,18 +32,18 @@ class ToastView: UIView {
         
         let vStack = UIStackView(arrangedSubviews: [titleLabel, messageLabel])
         vStack.axis = .vertical
-        vStack.spacing = attributesParam.titleMessageSpacing
+        vStack.spacing = attributesParam.layout.titleMessageSpacing
         
         let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         addGestureRecognizer(pan)
         
         var subView: UIView? = nil
         
-        if attributesParam.showButton {
+        if attributesParam.button.isVisible {
             let hStack = UIStackView(arrangedSubviews: [vStack, button])
             hStack.axis = .horizontal
             hStack.alignment = .center
-            hStack.spacing = attributesParam.hStackSpacing ?? .zero
+            hStack.spacing = attributesParam.layout.hStackSpacing ?? .zero
             
             subView = hStack
         } else {
@@ -56,10 +56,10 @@ class ToastView: UIView {
         subView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            subView.topAnchor.constraint(equalTo: topAnchor, constant: attributesParam.contentInsets.top),
-            subView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -attributesParam.contentInsets.bottom),
-            subView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: attributesParam.contentInsets.left),
-            subView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -attributesParam.contentInsets.right)
+            subView.topAnchor.constraint(equalTo: topAnchor, constant: attributesParam.layout.contentInsets.top),
+            subView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -attributesParam.layout.contentInsets.bottom),
+            subView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: attributesParam.layout.contentInsets.left),
+            subView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -attributesParam.layout.contentInsets.right)
         ])
     }
     
@@ -87,7 +87,7 @@ private extension ToastView {
     
     func setupButton(_ attributes: ToastAttributes) -> UIButton {
         let button = UIButton(type: .system)
-        button.tintColor = attributes.foregroundColor
+        button.tintColor = attributes.button.foregroundColor
         button.addTarget(nil, action: #selector(buttonTapped), for: .touchUpInside)
         button.setContentHuggingPriority(.required, for: .horizontal)
         button.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -101,13 +101,13 @@ private extension ToastView {
 extension ToastView {
     func setConstraints(in view: UIView) {
         let bottomInset = view.safeAreaInsets.bottom
-        let bottomOffset = (bottomInset > 0 ? -attributes.positionOffset : -(attributes.positionOffset + 16))
+        let bottomOffset = (bottomInset > 0 ? -attributes.position.offset : -(attributes.position.offset + 16))
         
-        if attributes.containerInsets == .zero {
+        if attributes.layout.containerInsets == .zero {
             centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         } else {
-            leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: attributes.containerInsets.left).isActive = true
-            trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -attributes.containerInsets.right).isActive = true
+            leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: attributes.layout.containerInsets.left).isActive = true
+            trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -attributes.layout.containerInsets.right).isActive = true
         }
         
         bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: bottomOffset).isActive = true
@@ -164,7 +164,7 @@ extension ToastView {
     @objc private func buttonTapped() {
         onButtonTap?()
         
-        if attributes.shouldDismissOnButtonTap {
+        if attributes.button.dismissOnTap {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
                 guard let self else { return }
                 
@@ -181,12 +181,12 @@ extension ToastView {
         
         switch gesture.state {
         case .began:
-            attributes.initialCenter = center
+            attributes.position.initialCenter = center
             layer.removeAllAnimations()
         case .changed:
             center = CGPoint(
-                x: attributes.initialCenter.x + translation.x,
-                y: attributes.initialCenter.y
+                x: attributes.position.initialCenter.x + translation.x,
+                y: attributes.position.initialCenter.y
             )
             
             let progress = abs(translation.x) / superview.bounds.width
@@ -199,7 +199,7 @@ extension ToastView {
                 dismissWithSwipe(direction: translation.x)
             } else {
                 UIView.animate(withDuration: 0.2) {
-                    self.center = self.attributes.initialCenter
+                    self.center = self.attributes.position.initialCenter
                     self.alpha = 1
                 }
             }

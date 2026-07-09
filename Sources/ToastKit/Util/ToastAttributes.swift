@@ -7,130 +7,253 @@
 
 import UIKit
 
-public struct ToastContent {
-    let title: String
-    let message: String
-    let buttonTitle: String?
-}
+// MARK: - toast
 
 public struct ToastAttributes {
+
     let tag: Int
+
+    let layout: ToastLayoutAttributes
+    let appearance: ToastAppearanceAttributes
+    public var text: ToastTextAttributes
+    let button: ToastButtonAttributes
+    let animation: ToastAnimationAttributes
+    let timing: ToastTimingAttributes
+    var position: ToastPositionAttributes
+
+    let stacking: StackingToastAttributes?
+
+    public init(
+        tag: Int = 0,
+        layout: ToastLayoutAttributes = .init(),
+        appearance: ToastAppearanceAttributes = .init(),
+        text: ToastTextAttributes = .init(),
+        button: ToastButtonAttributes = .init(),
+        animation: ToastAnimationAttributes = .init(),
+        timing: ToastTimingAttributes = .init(),
+        position: ToastPositionAttributes = .init(),
+        stacking: StackingToastAttributes? = nil
+    ) {
+        self.tag = tag
+        self.layout = layout
+        self.appearance = appearance
+        self.text = text
+        self.button = button
+        self.animation = animation
+        self.timing = timing
+        self.position = position
+        self.stacking = stacking
+    }
+}
+
+// MARK: - layout
+
+public struct ToastLayoutAttributes {
+
     let contentInsets: UIEdgeInsets
     let containerInsets: UIEdgeInsets
     let cornerRadius: CGFloat
-    
-    let backgroundColor: UIColor
-    let foregroundColor: UIColor
-    
-    public var title: String?
-    public var message: String
-    let titleFont: UIFont
-    let messageFont: UIFont
     let titleMessageSpacing: CGFloat
-    
-    let kern: CGFloat
-    let minimumLineHeight: CGFloat
-    let maximumLineHeight: CGFloat
-    let alignment: NSTextAlignment
     let hStackSpacing: CGFloat?
-    
-    public var buttonText: String
-    let buttonTextMinimumLineHeight: CGFloat
-    let buttonTextMaximumLineHeight: CGFloat
-    let buttonTextFont: UIFont
-    let showButton: Bool
-    let shouldDismissOnButtonTap: Bool
-    
-    let position: ToastPosition
-    var positionOffset: CGFloat
-    
-    let duration: TimeInterval
-    let deadline: CGFloat
-    var initialCenter: CGPoint
-    
-    let stackingToastAttributes: StackingToastAttributes?
-    let slideDirection: SlideDirection?
-    
+
     public init(
-        tag: Int = 0,
-        contentInsets: UIEdgeInsets = UIEdgeInsets(top: 10.0, left: 15.0, bottom: 10.0, right: 15.0),
-        containerInsets: UIEdgeInsets = UIEdgeInsets(top: .zero, left: 13.0, bottom: .zero, right: 13.0),
-        cornerRadius: CGFloat = 8.0,
-        backgroundColor: UIColor = UIColor.colorWithHexString("#3C3C3C"),
-        foregroundColor: UIColor = UIColor.white,
-        title: String? = "",
-        message: String = "",
-        titleFont: UIFont = .systemFont(ofSize: 17.0),
-        messageFont: UIFont = .systemFont(ofSize: 15.0),
-        titleMessageSpacing: CGFloat = .zero,
-        buttonText: String = "Button",
-        buttonTextMinimumLineHeight: CGFloat? = nil,
-        buttonTextMaximumLineHeight: CGFloat? = nil,
-        buttonTextFont: UIFont = .systemFont(ofSize: 15.0),
-        showButton: Bool = false,
-        shouldDismissOnButtonTap: Bool = false,
-        kern: CGFloat = .zero,
-        minimumLineHeight: CGFloat? = nil,
-        maximumLineHeight: CGFloat? = nil,
-        lineSpacing: CGFloat? = nil,
-        alignment: NSTextAlignment = .left,
-        hStackSpacing: CGFloat? = 5.0,
-        position: ToastPosition = .bottom,
-        positionOffset: CGFloat = .zero,
-        duration: TimeInterval = 0.5,
-        deadline: CGFloat = 2.0,
-        initialCenter: CGPoint = .zero,
-        stackingToastAttributes: StackingToastAttributes? = nil,
-        slideDirection: SlideDirection = .left
+        contentInsets: UIEdgeInsets = UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 15),
+        containerInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 13, bottom: 0, right: 13),
+        cornerRadius: CGFloat = 8,
+        titleMessageSpacing: CGFloat = 0,
+        hStackSpacing: CGFloat? = 5
     ) {
-        self.tag = tag
         self.contentInsets = contentInsets
         self.containerInsets = containerInsets
         self.cornerRadius = cornerRadius
+        self.titleMessageSpacing = titleMessageSpacing
+        self.hStackSpacing = hStackSpacing
+    }
+}
+
+// MARK: - appearance
+
+public struct ToastAppearanceAttributes {
+
+    let backgroundColor: UIColor
+    let foregroundColor: UIColor
+
+    public init(
+        backgroundColor: UIColor = UIColor.colorWithHexString("#3C3C3C"),
+        foregroundColor: UIColor = .white
+    ) {
         self.backgroundColor = backgroundColor
         self.foregroundColor = foregroundColor
+    }
+}
+
+// MARK: - text
+
+public struct ToastTextAttributes {
+
+    public var title: ToastLabelAttributes
+    public var message: ToastLabelAttributes
+
+    public init(
+        title: ToastLabelAttributes = .init(
+            font: .systemFont(ofSize: 17)
+        ),
+        message: ToastLabelAttributes = .init(
+            font: .systemFont(ofSize: 15)
+        )
+    ) {
         self.title = title
         self.message = message
-        self.titleFont = titleFont
-        self.messageFont = messageFont
-        self.titleMessageSpacing = titleMessageSpacing
-        self.buttonText = buttonText
-        self.buttonTextMinimumLineHeight = buttonTextMinimumLineHeight ?? .zero
-        self.buttonTextMaximumLineHeight = buttonTextMaximumLineHeight ?? .zero
-        self.buttonTextFont = buttonTextFont
-        self.showButton = showButton
-        self.shouldDismissOnButtonTap = shouldDismissOnButtonTap
+    }
+}
+
+public struct ToastLabelAttributes {
+
+    public var value: String
+
+    let font: UIFont
+    let foregroundColor: UIColor
+
+    let kern: CGFloat
+    let alignment: NSTextAlignment
+    let lineBreakMode: NSLineBreakMode
+    let numberOfLines: Int
+    let minimumLineHeight: CGFloat
+    let maximumLineHeight: CGFloat
+
+    public init(
+        value: String = "",
+        font: UIFont = .systemFont(ofSize: 15),
+        foregroundColor: UIColor = .white,
+        kern: CGFloat = 0,
+        alignment: NSTextAlignment = .left,
+        lineBreakMode: NSLineBreakMode = .byWordWrapping,
+        numberOfLines: Int = 0,
+        minimumLineHeight: CGFloat = 0,
+        maximumLineHeight: CGFloat = 0
+    ) {
+        self.value = value
+        self.font = font
+        self.foregroundColor = foregroundColor
         self.kern = kern
-        self.minimumLineHeight = minimumLineHeight ?? .zero
-        self.maximumLineHeight = maximumLineHeight ?? .zero
         self.alignment = alignment
-        self.hStackSpacing = hStackSpacing
+        self.lineBreakMode = lineBreakMode
+        self.numberOfLines = numberOfLines
+        self.minimumLineHeight = minimumLineHeight
+        self.maximumLineHeight = maximumLineHeight
+    }
+}
+
+// MARK: - button
+
+public struct ToastButtonAttributes {
+
+    let text: String
+
+    let font: UIFont
+    let foregroundColor: UIColor
+    let backgroundColor: UIColor
+
+    let kern: CGFloat
+    let alignment: NSTextAlignment
+    let minimumLineHeight: CGFloat
+    let maximumLineHeight: CGFloat
+
+    let isVisible: Bool
+    let dismissOnTap: Bool
+
+    public init(
+        text: String = "Button",
+        font: UIFont = .systemFont(ofSize: 15),
+        foregroundColor: UIColor = .white,
+        backgroundColor: UIColor = .clear,
+        kern: CGFloat = 0,
+        alignment: NSTextAlignment = .center,
+        minimumLineHeight: CGFloat = 0,
+        maximumLineHeight: CGFloat = 0,
+        isVisible: Bool = false,
+        dismissOnTap: Bool = false
+    ) {
+        self.text = text
+        self.font = font
+        self.foregroundColor = foregroundColor
+        self.backgroundColor = backgroundColor
+        self.kern = kern
+        self.alignment = alignment
+        self.minimumLineHeight = minimumLineHeight
+        self.maximumLineHeight = maximumLineHeight
+        self.isVisible = isVisible
+        self.dismissOnTap = dismissOnTap
+    }
+}
+
+// MARK: - timing
+
+public struct ToastTimingAttributes {
+
+    let animationDuration: TimeInterval
+    let dismissalDeadline: CGFloat
+
+    public init(
+        animationDuration: TimeInterval = 0.5,
+        dismissalDeadline: CGFloat = 3
+    ) {
+        self.animationDuration = animationDuration
+        self.dismissalDeadline = dismissalDeadline
+    }
+}
+
+// MARK: - position
+
+public struct ToastPositionAttributes {
+
+    let position: ToastPosition
+    var offset: CGFloat
+    var initialCenter: CGPoint
+
+    public init(
+        position: ToastPosition = .bottom,
+        offset: CGFloat = 0,
+        initialCenter: CGPoint = .zero
+    ) {
         self.position = position
-        self.positionOffset = positionOffset
-        self.duration = duration
-        self.deadline = deadline
+        self.offset = offset
         self.initialCenter = initialCenter
-        self.stackingToastAttributes = stackingToastAttributes
+    }
+}
+
+// MARK: - animation
+
+public struct ToastAnimationAttributes {
+
+    let slideDirection: SlideDirection?
+
+    public init(
+        slideDirection: SlideDirection? = .left
+    ) {
         self.slideDirection = slideDirection
     }
 }
 
+// MARK: - stacking
+
 public struct StackingToastAttributes {
+
     let initialTag: Int
     let count: Int
     let spacing: CGFloat
     let insertionPosition: StackingToastInsertionPosition
-    let shouldSlideOnRemoval: Bool?
+    let shouldSlideOnRemoval: Bool
     let nextDismissalDeadline: CGFloat
-    let shouldDismissAllOnButtonTap: Bool?
-    
+    let shouldDismissAllOnButtonTap: Bool
+
     public init(
         initialTag: Int = 8000,
         count: Int = 3,
         spacing: CGFloat = 8,
         insertionPosition: StackingToastInsertionPosition = .bottom,
-        shouldSlideOnRemoval: Bool? = false,
-        shouldDismissAllOnButtonTap: Bool? = false,
+        shouldSlideOnRemoval: Bool = false,
+        shouldDismissAllOnButtonTap: Bool = false,
         nextDismissalDeadline: CGFloat = 0.05
     ) {
         self.initialTag = initialTag

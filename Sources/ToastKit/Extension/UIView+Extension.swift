@@ -43,7 +43,7 @@ public extension UIView {
         addSubview(toast)
         
         toast.setConstraints(in: self)
-        toast.animateWith(duration: attributes.duration, deadline: attributes.deadline)
+        toast.animateWith(duration: attributes.timing.animationDuration, deadline: attributes.timing.dismissalDeadline)
         
         toast.onButtonTap = {
             buttonAction?()
