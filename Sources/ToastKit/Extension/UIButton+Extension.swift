@@ -9,19 +9,19 @@ import UIKit
 
 public extension UIButton {
     func configureButtonText(_ attributes: ToastAttributes) {
-        let attributedString = NSMutableAttributedString(string: attributes.buttonText)
+        let attributedString = NSMutableAttributedString(string: attributes.button.text)
         
         attributedString.addAttributes([
-            .font: attributes.buttonTextFont as Any,
-            .foregroundColor: attributes.foregroundColor as Any,
-            .kern: attributes.kern,
+            .font: attributes.button.font as Any,
+            .foregroundColor: attributes.button.foregroundColor as Any,
+            .kern: attributes.button.kern,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ], range: NSRange(location: .zero, length: attributedString.length))
         
         let style = NSMutableParagraphStyle()
-        style.alignment = attributes.alignment
-        style.minimumLineHeight = attributes.buttonTextMinimumLineHeight
-        style.maximumLineHeight = attributes.buttonTextMaximumLineHeight
+        style.alignment = attributes.button.alignment
+        style.minimumLineHeight = attributes.button.maximumLineHeight
+        style.maximumLineHeight = attributes.button.maximumLineHeight
         
         attributedString.addAttribute(
             .paragraphStyle,

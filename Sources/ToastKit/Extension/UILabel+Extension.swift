@@ -9,20 +9,18 @@ import UIKit
 
 public extension UILabel {
     func configureTitle(_ attributes: ToastAttributes) {
-        guard let title = attributes.title else { return }
-        
-        let attributedString = NSMutableAttributedString(string: title)
+        let attributedString = NSMutableAttributedString(string: attributes.text.title.value)
         
         attributedString.addAttributes([
-            .font: attributes.titleFont as Any,
-            .foregroundColor: attributes.foregroundColor as Any,
-            .kern: attributes.kern
+            .font: attributes.text.title.font as Any,
+            .foregroundColor: attributes.text.title.foregroundColor as Any,
+            .kern: attributes.text.title.kern
         ], range: NSRange(location: .zero, length: attributedString.length))
         
         let style = NSMutableParagraphStyle()
-        style.alignment = attributes.alignment
-        style.minimumLineHeight = attributes.minimumLineHeight
-        style.maximumLineHeight = attributes.maximumLineHeight
+        style.alignment = attributes.text.title.alignment
+        style.minimumLineHeight = attributes.text.title.minimumLineHeight
+        style.maximumLineHeight = attributes.text.title.maximumLineHeight
         
         attributedString.addAttribute(
             .paragraphStyle,
@@ -34,18 +32,19 @@ public extension UILabel {
     }
     
     func configureMessage(_ attributes: ToastAttributes) {
-        let attributedString = NSMutableAttributedString(string: attributes.message)
+        let attributedString = NSMutableAttributedString(string: attributes.text.message.value)
         
         attributedString.addAttributes([
-            .font: attributes.messageFont as Any,
-            .foregroundColor: attributes.foregroundColor as Any,
-            .kern: attributes.kern
+            .font: attributes.text.message.font as Any,
+            .foregroundColor: attributes.text.message.foregroundColor as Any,
+            .kern: attributes.text.message.kern
         ], range: NSRange(location: .zero, length: attributedString.length))
         
         let style = NSMutableParagraphStyle()
-        style.alignment = attributes.alignment
-        style.minimumLineHeight = attributes.minimumLineHeight
-        style.maximumLineHeight = attributes.maximumLineHeight
+        style.alignment = attributes.text.message.alignment
+        style.minimumLineHeight = attributes.text.message.minimumLineHeight
+        style.maximumLineHeight = attributes.text.message.maximumLineHeight
+        style.lineBreakMode =  .byTruncatingTail
         
         attributedString.addAttribute(
             .paragraphStyle,
@@ -53,6 +52,7 @@ public extension UILabel {
             range: NSRange(location: .zero, length: attributedString.length)
         )
         
+        numberOfLines = attributes.text.message.numberOfLines
         attributedText = attributedString as NSAttributedString
     }
 }
