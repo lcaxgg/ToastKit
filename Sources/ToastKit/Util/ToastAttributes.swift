@@ -246,6 +246,8 @@ public struct StackingToastAttributes {
     let shouldSlideOnRemoval: Bool
     let nextDismissalDeadline: CGFloat
     let shouldDismissAllOnButtonTap: Bool
+    
+    public var shouldValidateExistingContent: Bool
 
     public init(
         initialTag: Int = 8000,
@@ -254,7 +256,8 @@ public struct StackingToastAttributes {
         insertionPosition: StackingToastInsertionPosition = .bottom,
         shouldSlideOnRemoval: Bool = false,
         shouldDismissAllOnButtonTap: Bool = false,
-        nextDismissalDeadline: CGFloat = 0.05
+        nextDismissalDeadline: CGFloat = 0.05,
+        shouldValidateExistingContent: Bool = false
     ) {
         self.initialTag = initialTag
         self.count = count
@@ -263,5 +266,6 @@ public struct StackingToastAttributes {
         self.shouldSlideOnRemoval = shouldSlideOnRemoval
         self.shouldDismissAllOnButtonTap = shouldDismissAllOnButtonTap
         self.nextDismissalDeadline = nextDismissalDeadline
+        self.shouldValidateExistingContent = shouldValidateExistingContent
     }
 }

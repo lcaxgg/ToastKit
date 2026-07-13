@@ -58,26 +58,52 @@ extension StackingToastView {
     public func addToast(
         onButtonTap: (() -> Void)? = nil
     ) {
-        guard !updateLastToastIfNeeded() else {
-             return
-         }
-        
+        // If an identical message already exists, replace the previous one with the new one
+        if attributes.stacking?.shouldValidateExistingContent == true {
+            if let replaceIndex = vStack.arrangedSubviews.firstIndex(where: { sub in
+                self.isMatchingToastView(sub)
+            }) {
+                let existing = vStack.arrangedSubviews[replaceIndex]
+                vStack.removeArrangedSubview(existing)
+                existing.removeFromSuperview()
+                
+                let bgView = setupBgView(onButtonTap: onButtonTap)
+                let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+                bgView.addGestureRecognizer(pan)
+                
+                switch attributes.stacking?.insertionPosition {
+                case .top:
+                    vStack.insertArrangedSubview(bgView, at: 0)
+                case .bottom, .none:
+                    vStack.addArrangedSubview(bgView)
+                }
+                
+                animateAddedToast(
+                    bgView,
+                    duration: attributes.timing.animationDuration,
+                    deadline: attributes.timing.dismissalDeadline
+                )
+                return
+            }
+        }
+
+        // If we're at capacity and not replacing, update/rotate the last (or first) toast if needed
+        if updateLastToastIfNeeded() {
+            return
+        }
+
+        // Create and insert new toast normally
         let bgView = setupBgView(onButtonTap: onButtonTap)
-        
-        let pan = UIPanGestureRecognizer(
-            target: self,
-            action: #selector(handlePan(_:))
-        )
-        
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
         bgView.addGestureRecognizer(pan)
-        
+
         switch attributes.stacking?.insertionPosition {
         case .top:
             vStack.insertArrangedSubview(bgView, at: 0)
         case .bottom, .none:
             vStack.addArrangedSubview(bgView)
         }
-        
+
         animateAddedToast(
             bgView,
             duration: attributes.timing.animationDuration,
@@ -87,15 +113,27 @@ extension StackingToastView {
     
     @discardableResult
     private func updateLastToastIfNeeded() -> Bool {
+        // If a matching toast already exists, do not treat as capacity update; caller handles replacement
+        if attributes.stacking?.shouldValidateExistingContent == true {
+            let hasMatching = vStack.arrangedSubviews.contains(where: { sub in
+                self.isMatchingToastView(sub)
+            })
+            if hasMatching { return false }
+        }
+
         guard
             let count = attributes.stacking?.count,
-            vStack.arrangedSubviews.count >= count,
-            let lastToast = vStack.arrangedSubviews.last
+            vStack.arrangedSubviews.count >= count
         else {
             return false
         }
 
-        updateToast(lastToast)
+        // Determine which toast to update/remove based on insertion position
+        let shouldPopFromBottom = (attributes.stacking?.insertionPosition == .bottom)
+        let indexToUpdate = shouldPopFromBottom ? (vStack.arrangedSubviews.count - 1) : 0
+        let toastToUpdate = vStack.arrangedSubviews[indexToUpdate]
+
+        updateToast(toastToUpdate)
 
         resetDismissTimer(
             duration: attributes.timing.animationDuration,
@@ -410,6 +448,12 @@ private extension StackingToastView {
             )
         }
     }
+    
+    private func isMatchingToastView(_ sub: UIView) -> Bool {
+        let existingMessage = (sub.viewWithTag(StackingToastContentTag.message) as? UILabel)?.text
+        let messageMatches = existingMessage == attributes.text.message.value
+        return messageMatches
+    }
 }
 
 //MARK: - Action/s
@@ -454,3 +498,4 @@ extension StackingToastView {
         }
     }
 }
+
