@@ -335,16 +335,27 @@ private extension StackingToastView {
         // Cancel any pending dismissal since a new toast was added
         dismissWorkItem?.cancel()
         
-        view.alpha = 0
-        
-        UIView.animate(withDuration: duration, animations: {
-            view.alpha = 1
-        }) { _ in
-            self.resetDismissTimer(
-                duration: duration,
-                deadline: deadline
-            )
+        if attributes.animation.shouldAnimate {
+            if vStack.subviews.count == 1 {
+                view.alpha = 0
+                
+                UIView.animate(withDuration: duration, animations: {
+                    view.alpha = 1
+                }) { _ in
+                    self.resetDismissTimer(
+                        duration: duration,
+                        deadline: deadline
+                    )
+                }
+                
+                return
+            }
         }
+        
+        resetDismissTimer(
+            duration: duration,
+            deadline: deadline
+        )
     }
     
     private func dismiss(view: UIView, direction: CGFloat) {

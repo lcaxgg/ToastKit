@@ -227,11 +227,14 @@ public struct ToastPositionAttributes {
 public struct ToastAnimationAttributes {
 
     let slideDirection: SlideDirection?
-
+    public var shouldAnimate: Bool
+    
     public init(
-        slideDirection: SlideDirection? = .left
+        slideDirection: SlideDirection? = .left,
+        shouldAnimate: Bool = true
     ) {
         self.slideDirection = slideDirection
+        self.shouldAnimate = shouldAnimate
     }
 }
 
