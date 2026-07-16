@@ -16,7 +16,7 @@ public struct ToastAttributes {
     let layout: ToastLayoutAttributes
     let appearance: ToastAppearanceAttributes
     public var text: ToastTextAttributes
-    let button: ToastButtonAttributes
+    public var button: ToastButtonAttributes
     let animation: ToastAnimationAttributes
     let timing: ToastTimingAttributes
     var position: ToastPositionAttributes
@@ -159,7 +159,7 @@ public struct ToastButtonAttributes {
     let minimumLineHeight: CGFloat
     let maximumLineHeight: CGFloat
 
-    let isVisible: Bool
+    public var isVisible: Bool
     let dismissOnTap: Bool
 
     public init(
