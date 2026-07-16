@@ -21,7 +21,7 @@ public struct ToastAttributes {
     let timing: ToastTimingAttributes
     var position: ToastPositionAttributes
 
-    let stacking: StackingToastAttributes?
+    var stacking: StackingToastAttributes?
 
     public init(
         tag: Int = 0,
@@ -251,7 +251,8 @@ public struct StackingToastAttributes {
     let shouldDismissAllOnButtonTap: Bool
     
     public var shouldValidateExistingContent: Bool
-
+    internal var isShowingSameContent: Bool = false
+    
     public init(
         initialTag: Int = 8000,
         count: Int = 3,

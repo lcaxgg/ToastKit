@@ -67,6 +67,8 @@ extension StackingToastView {
                 vStack.removeArrangedSubview(existing)
                 existing.removeFromSuperview()
                 
+                attributes.stacking?.isShowingSameContent = true
+                
                 let bgView = setupBgView(onButtonTap: onButtonTap)
                 let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
                 bgView.addGestureRecognizer(pan)
@@ -78,7 +80,7 @@ extension StackingToastView {
                     vStack.addArrangedSubview(bgView)
                 }
                 
-                animateAddedToast(
+                handleAddedToast(
                     bgView,
                     duration: attributes.timing.animationDuration,
                     deadline: attributes.timing.dismissalDeadline
@@ -86,25 +88,25 @@ extension StackingToastView {
                 return
             }
         }
-
+        
         // If we're at capacity and not replacing, update/rotate the last (or first) toast if needed
         if updateLastToastIfNeeded() {
             return
         }
-
+        
         // Create and insert new toast normally
         let bgView = setupBgView(onButtonTap: onButtonTap)
         let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
         bgView.addGestureRecognizer(pan)
-
+        
         switch attributes.stacking?.insertionPosition {
         case .top:
             vStack.insertArrangedSubview(bgView, at: 0)
         case .bottom, .none:
             vStack.addArrangedSubview(bgView)
         }
-
-        animateAddedToast(
+        
+        handleAddedToast(
             bgView,
             duration: attributes.timing.animationDuration,
             deadline: attributes.timing.dismissalDeadline
@@ -120,26 +122,26 @@ extension StackingToastView {
             })
             if hasMatching { return false }
         }
-
+        
         guard
             let count = attributes.stacking?.count,
             vStack.arrangedSubviews.count >= count
         else {
             return false
         }
-
+        
         // Determine which toast to update/remove based on insertion position
         let shouldPopFromBottom = (attributes.stacking?.insertionPosition == .bottom)
         let indexToUpdate = shouldPopFromBottom ? (vStack.arrangedSubviews.count - 1) : 0
         let toastToUpdate = vStack.arrangedSubviews[indexToUpdate]
-
+        
         updateToast(toastToUpdate)
-
+        
         resetDismissTimer(
             duration: attributes.timing.animationDuration,
             deadline: attributes.timing.dismissalDeadline
         )
-
+        
         return true
     }
     
@@ -231,37 +233,37 @@ private extension StackingToastView {
         _ onButtonTap: (() -> Void)?
     ) -> UIButton {
         let button = UIButton(type: .system)
-
+        
         button.tintColor = attributes.appearance.foregroundColor
         button.setContentHuggingPriority(.required, for: .horizontal)
         button.setContentCompressionResistancePriority(.required, for: .horizontal)
         button.configureButtonText(attributes)
-
+        
         if #available(iOS 14.0, *) {
             button.addAction(
                 UIAction { [weak self] _ in
                     guard let self else { return }
-
+                    
                     onButtonTap?()
-
+                    
                     self.resetDismissTimer(
                         duration: attributes.timing.animationDuration,
                         deadline: attributes.timing.dismissalDeadline
                     )
-
+                    
                     if attributes.stacking?.shouldDismissAllOnButtonTap == true {
-
+                        
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             self.removeFromSuperview()
                             self.onDismiss?(true)
                         }
-
+                        
                     } else if attributes.button.dismissOnTap {
-
+                        
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             self.vStack.removeArrangedSubview(view)
                             view.removeFromSuperview()
-
+                            
                             if self.vStack.arrangedSubviews.isEmpty {
                                 self.removeFromSuperview()
                                 self.onDismiss?(true)
@@ -274,7 +276,7 @@ private extension StackingToastView {
         } else {
             // iOS 13 fallback
         }
-
+        
         return button
     }
 }
@@ -327,35 +329,69 @@ extension StackingToastView {
 //MARK: - Private method/s
 
 private extension StackingToastView {
-    private func animateAddedToast(
+    func handleAddedToast(
         _ view: UIView,
         duration: TimeInterval,
         deadline: CGFloat
     ) {
-        // Cancel any pending dismissal since a new toast was added
         dismissWorkItem?.cancel()
         
-        if attributes.animation.shouldAnimate {
-            if vStack.subviews.count == 1 {
-                view.alpha = 0
-                
-                UIView.animate(withDuration: duration, animations: {
-                    view.alpha = 1
-                }) { _ in
-                    self.resetDismissTimer(
-                        duration: duration,
-                        deadline: deadline
-                    )
-                }
-                
-                return
-            }
+        guard !handleSameContentToast(
+            duration: duration,
+            deadline: deadline
+        ) else {
+            return
         }
+        
+        animateAddedToast(
+            view,
+            duration: duration,
+            deadline: deadline
+        )
+    }
+    
+    func handleSameContentToast(
+        duration: TimeInterval,
+        deadline: CGFloat
+    ) -> Bool {
+        guard attributes.stacking?.isShowingSameContent == true else {
+            return false
+        }
+        
+        attributes.stacking?.isShowingSameContent = false
         
         resetDismissTimer(
             duration: duration,
             deadline: deadline
         )
+        
+        return true
+    }
+    
+    func animateAddedToast(
+        _ view: UIView,
+        duration: TimeInterval,
+        deadline: CGFloat
+    ) {
+        guard attributes.animation.shouldAnimate,
+              vStack.subviews.count == 1 else {
+            resetDismissTimer(
+                duration: duration,
+                deadline: deadline
+            )
+            return
+        }
+        
+        view.alpha = 0
+        
+        UIView.animate(withDuration: duration, animations: {
+            view.alpha = 1
+        }) { _ in
+            self.resetDismissTimer(
+                duration: duration,
+                deadline: deadline
+            )
+        }
     }
     
     private func dismiss(view: UIView, direction: CGFloat) {
